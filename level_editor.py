@@ -45,8 +45,6 @@ class BreakParticle(pygame.sprite.Sprite):
 
         if self.alpha <= 0:
             self.kill()
-        if not self.rect.colliderect(pygame.Rect(0, 0, WIDTH, HEIGHT)):
-            self.kill()
 
         self.rect.x += self.x
         self.rect.y -= self.grav
@@ -55,7 +53,7 @@ class BreakParticle(pygame.sprite.Sprite):
         self.draw()
 
     def draw(self):
-        self.screen.blit(self.image, self.rect)
+        self.screen.blit(self.image, self.rect.topleft)
 
 
 class PlaceParticle(pygame.sprite.Sprite):
@@ -396,6 +394,64 @@ class Editor:
 
                 ##################################################################
 
+
+
+    def flood_left(self, tile_loc, tilePos, mode: Literal["flood", "erase"]):
+
+        if self.l_flood_start == None:
+            self.l_flood_start = [c*self.tilemap.tile_size for c in tilePos]
+        end_pos = [c*self.tilemap.tile_size for c in tilePos]
+        zipped = list(zip(self.l_flood_start - self.offset, end_pos - self.offset))
+
+        top_left = [min(zipped[0]), min(zipped[1])]
+        bottom_right = [max(zipped[0]) + self.tilemap.tile_size, max(zipped[1]) + self.tilemap.tile_size]
+        width = abs(zipped[0][0] - zipped[0][1]) + self.tilemap.tile_size
+        height = abs(zipped[1][0] - zipped[1][1]) + self.tilemap.tile_size
+
+        if mode == 'flood':
+            pygame.draw.rect(self.screen, (255, 255, 255), [top_left[0], top_left[1], width, height], 5)
+        
+        elif mode == 'erase':
+            self.l_flood_start = None
+
+            delete = False
+            tilePos = [0, 0]
+            for x in range(int(top_left[0] + self.offset.x), int(bottom_right[0] + self.offset.x), self.tilemap.tile_size):
+                tilePos[0] = x // self.tilemap.tile_size
+                for y in range(int(top_left[1] + self.offset.y), int(bottom_right[1] + self.offset.y), self.tilemap.tile_size):
+                    tilePos[1] = y // self.tilemap.tile_size
+                    tileloc = str(tilePos[0]) + ";" + str(tilePos[1])
+
+                    layers = [self.current_layer] if self.current_layer != -1 else list(self.layers.keys())
+                    for current_layer in layers:
+                        if current_layer not in self.layers.keys() or current_layer not in self.tilemap.tilemap.keys(): 
+                            return
+                        
+                        if tileloc in self.layers[current_layer]:
+                            del self.layers[current_layer][tileloc]
+
+                        if tileloc in self.tilemap.tilemap[current_layer]:
+                            tile: Tile = self.tilemap.tilemap[current_layer][tileloc]
+                            img = Tile.SPRITES[tile.type][tile.variant]
+                            delete: pygame.Surface = img 
+                            del self.tilemap.tilemap[current_layer][tileloc]
+
+                    # if tileloc in self.tilemap.tilemap[self.current_layer]:
+                    #     tile: Tile = self.tilemap.tilemap[self.current_layer][tileloc]
+                    #     img = Tile.SPRITES[tile.type][tile.variant]
+                    #     delete: pygame.Surface = img 
+                    #     del self.tilemap.tilemap[self.current_layer][tileloc]
+
+                            for x1 in range(0, delete.get_width(), 2):
+                                for y1 in range(0, delete.get_height(), 2):
+                                    if random.randint(0, 1) == 0:
+                                        BreakParticle(
+                                            self,
+                                            [self.particles],
+                                            [tilePos[0] * TILE_SIZE + x1 - self.offset.x, tilePos[1] * TILE_SIZE + y1 - self.offset.y], 
+                                            delete.get_at((x1, y1)),
+                                        )
+
     def flood_right(self, tile_loc, tilePos, mode: Literal["flood", "place"], current_img=None):
 
         if self.r_flood_start == None:
@@ -425,6 +481,9 @@ class Editor:
                     tileloc = str(tile_Pos[0]) + ";" + str(tile_Pos[1])
 
                     current_layer = self.current_layer if self.current_layer != -1 else 0
+                    if current_layer not in self.layers.keys():
+                        self.layers[current_layer] = {}
+                        
                     self.layers[current_layer][tile_loc] = {
                         "type" : self.asset_names[self.current_tilegroup],
                         "variant" : self.current_tilevariant,
@@ -489,6 +548,14 @@ class Editor:
                 elif event.key == pygame.K_PERIOD:
                     self.current_layer += 1
 
+                keys = pygame.key.get_pressed()
+                if event.key == pygame.K_s and (keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]):
+                    self.tilemap.save()
+                if event.key == pygame.K_o and (keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]):
+                    self.tilemap.load()
+                if event.key == pygame.K_t and (keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]):
+                    self.tilemap.auto_tile()
+
     def run(self):
         last_time = pygame.time.get_ticks()
         while self.running:
@@ -501,9 +568,14 @@ class Editor:
             self.screen.fill((30, 30, 30))
             self.background.update()
 
-            for layer in sorted(self.tilemap.tilemap.keys()):
+            #render tiles
+            for layer in sorted(self.tilemap.tilemap.keys(), reverse=True):
                 for tile in self.tilemap.tilemap[layer].keys():
-                    self.tilemap.tilemap[layer][tile].update(dim=(layer != self.current_layer) and (not (self.current_layer == -1)))
+                    tile: Tile = self.tilemap.tilemap[layer][tile]
+                    if pygame.Rect((tile.pos[0] * TILE_SIZE) - self.offset.x, 
+                                (tile.pos[1] * TILE_SIZE) - self.offset.y,
+                                TILE_SIZE, TILE_SIZE).colliderect(pygame.Rect(0, 0, WIDTH, HEIGHT)):
+                        tile.update(dim=(layer != self.current_layer) and (not (self.current_layer == -1)))
             self.particles.update()
 
             #axes

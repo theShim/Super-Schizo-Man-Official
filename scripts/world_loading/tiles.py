@@ -15,6 +15,22 @@ from scripts.utils.spritesheets import Spritesheet
 
 class Tile(pygame.sprite.Sprite):
 
+    AUTO_TILE_TYPES = {'grass', 'stone'}
+    AUTO_TILE_MAP = {
+        "grass" : {
+            tuple(sorted([(1, 0), (0, 1)])): 0,                                #top-left
+            tuple(sorted([(1, 0), (0, 1), (-1, 0)])): 1,                       #top
+            tuple(sorted([(-1, 0), (0, 1)])): 2,                               #top-right
+            tuple(sorted([(1, 0), (0, -1), (0, 1)])): 3,                       #left
+            tuple(sorted([(1, 0), (-1, 0), (0, 1), (0, -1)])): {"choices" : [4, 9, 10, 11], "weights" : [100, 1, 1, 1]}, #middle
+            tuple(sorted([(-1, 0), (0, -1), (0, 1)])): 5,                      #right
+            tuple(sorted([(1, 0), (0, -1)])): 6,                               #bottom-left
+            tuple(sorted([(-1, 0), (0, -1), (1, 0)])): 7,                      #bottom
+            tuple(sorted([(-1, 0), (0, -1)])): 8,                              #bottom-right
+            # tuple(sorted([(0, -1)])): 9,                                     #lonesome top
+        }
+    }
+
     @classmethod
     def cache_sprites(cls):
         cls.SPRITES = {}

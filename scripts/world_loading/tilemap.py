@@ -33,3 +33,28 @@ class Tilemap:
             self.tilemap[layer] = {}
 
         self.tilemap[layer][tile_loc] = Tile(self.game, type, variant, pos)
+
+        ##################################################################################
+
+    def auto_tile(self):
+        for layer in self.tilemap:
+            for loc in self.tilemap[layer]:
+                tile = self.tilemap[layer][loc]
+                neighbours = set()
+                for shift in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                    check_loc = str(tile.pos[0] + shift[0]) + ';' + str(tile.pos[1] + shift[1])
+                    if check_loc in self.tilemap[layer]:
+                        if self.tilemap[layer][check_loc].type == tile.type:
+                            neighbours.add(shift)
+
+                neighbours = tuple(sorted(neighbours))
+                for tile_type in Tile.AUTO_TILE_TYPES:
+                    if tile.type.startswith(tile_type):
+                        if neighbours in Tile.AUTO_TILE_MAP[tile_type]:
+                            variant = Tile.AUTO_TILE_MAP[tile_type][neighbours]
+                            
+                            if type(variant) != dict:
+                                tile.variant = Tile.AUTO_TILE_MAP[tile_type][neighbours]
+                            else:
+                                tile.variant = random.choices(variant["choices"], variant["weights"], k=1)[0]
+                        break
