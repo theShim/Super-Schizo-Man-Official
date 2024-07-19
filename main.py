@@ -8,7 +8,7 @@ with contextlib.redirect_stdout(None):
     
 import sys
 
-from scripts.world_loading.state_machine import State_Loader
+from scripts.states.state_machine import State_Loader
 
 from scripts.config.SETTINGS import DEBUG, WINDOW_TITLE, SIZE, FPS
 from scripts.utils.CORE_FUNCS import vec
@@ -45,6 +45,7 @@ class Game:
 
         if DEBUG:
             self.debugger = Debugger()
+            self.fps_clock = pygame.time.Clock()
 
     def initialise(self):
         pygame.init()  #general pygame
@@ -85,7 +86,8 @@ class Game:
 
             if DEBUG:
                 self.debugger.update()
-                self.debugger.add_text(f"FPS: {round(self.clock.get_fps(), 1)}")
+                self.fps_clock.tick_busy_loop()
+                self.debugger.add_text(f"FPS: {round(self.clock.get_fps(), 1)} | {round(self.fps_clock.get_fps(), 1)}")
 
             pygame.display.update()
             self.clock.tick(FPS)

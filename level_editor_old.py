@@ -411,7 +411,6 @@ class Editor:
                 self.left_right_button_pressed = False
 
         assets = self.assets[current_tilegroup]
-        delta_i = 0
         for i, asset in enumerate(assets):
 
             asset = asset.copy()

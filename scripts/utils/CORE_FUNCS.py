@@ -115,6 +115,28 @@ class Timer:
 
     ##############################################################################################
 
+def add_loaded_sprite_number(num):
+    with open("scripts/config/LOADED_SPRITES_NUMBER.json", "r") as json_file:
+        json_obj = json.load(json_file)
+    
+    json_obj["current"] += num
+
+    with open("scripts/config/LOADED_SPRITES_NUMBER.json", "w") as outfile:
+        outfile.write(json.dumps(json_obj, indent=4))
+
+def check_loaded_sprite_number():
+    with open("scripts/config/LOADED_SPRITES_NUMBER.json", "r") as json_file:
+        json_obj = json.load(json_file)
+
+    if json_obj["total"] < json_obj["current"]:
+        json_obj["total"] = json_obj["current"]
+    json_obj["current"] = 0
+
+    with open("scripts/config/LOADED_SPRITES_NUMBER.json", "w") as outfile:
+        outfile.write(json.dumps(json_obj, indent=4))
+
+    ##############################################################################################
+
 #counting total number of lines written in the directory
 import os                
 def countLinesIn(directory):
