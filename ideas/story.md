@@ -11,13 +11,13 @@
 >- Begin with opening monologue box with some piano music or rain with typewriter effect (similar to Super Paper Mario, a heavy inspiration)
 >- (rn its the l's speech from death note lmao)
 >- These monologues should occur after every stage or so and craft its own story on top of the actual game one
->- Haven't decided what that will be, possibly relationships of the player "irl" (referring to outside his delusions), possibly memories, possibly what's actually happening "irl" at that momen
+>- Haven't decided what that will be, possibly relationships of the player "irl" (referring to outside his delusions), possibly memories, possibly what's actually happening "irl" at that moment
 
 ### Transition
 
 >- Then play that blinking effect, have the player wake up in the grassy area. Probably use the perlin background
 >- Have the butterfly wake you up and talk to you.
->- The butterfly voiced by (@hura_crepitans) will act as a guide but witty and often stupid/useless.
+>- The butterfly voiced by will act as a guide but witty and often stupid/useless.
 >- Maybe have an ability to click on enemies to highlight features about it like health and general description
 
 ###
@@ -29,10 +29,10 @@
 
 ### Initial dialogue
 - Begin with dialogue with some guy at a house or something maybe a cabin
-- Have him talk abot some generic boss and tells you its location
-- Follow the butterfly's instructions to get there, but he should generally be annoying as hell (hence yunyang's the VA for it)
+- Have him talk about some generic boss and tells you its location
+- Follow the butterfly's instructions to get there, but he should generally be annoying as hell
 
->- Transition from grassy area to denser forest to darker undergrodun area?
+>- Transition from grassy area to denser forest to darker underground area?
 
 ### Area 1
 >- Get to know attacks n stuff
@@ -41,7 +41,6 @@
 
 ### Area 2
 >- Background shift to more denser foliage? Maybe make the parallax less shifty and larger
-
 
 ### Area 3
 >- Maybe some shaky bridge type thing

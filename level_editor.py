@@ -12,7 +12,7 @@ from typing import Literal
 
 from scripts.world_loading.backgrounds import Editor_Background
 from scripts.world_loading.tilemap import Tilemap
-from scripts.world_loading.tiles import Tile
+from scripts.world_loading.tiles import Tile, Offgrid_Tile
 
 from scripts.config.SETTINGS import SIZE, FPS, WIDTH, HEIGHT, TILE_SIZE
 from scripts.utils.CORE_FUNCS import vec, check_loaded_sprite_number
@@ -98,6 +98,7 @@ class Editor:
         self.tilemap = Tilemap(self, editor_flag=True)
         self.cache_sprites()
         check_loaded_sprite_number()
+        self.on_grid = True
 
         self.assets = Tile.SPRITES.copy()
         self.asset_names = list(self.assets.keys())
@@ -105,6 +106,11 @@ class Editor:
         self.current_tilevariant = 0
         self.l_flood_start = None
         self.r_flood_start = None
+
+        self.offgrid_assets = Offgrid_Tile.SPRITES.copy()
+        self.offgrid_names = list(self.offgrid_assets.keys())
+        self.offgrid_tilegroup = 0
+        self.offgrid_tilevariant = 0
 
         self.sidebar_open = False
         self.sidebar = pygame.Surface((WIDTH/4, HEIGHT), pygame.SRCALPHA)
@@ -138,6 +144,7 @@ class Editor:
 
     def cache_sprites(self):
         Tile.cache_sprites()
+        Offgrid_Tile.cache_sprites()
 
         ##################################################################################
 
@@ -175,8 +182,12 @@ class Editor:
         self.sidebar_tiles_update(current_tilegroup)
 
         #tile title
-        label_shadow = self.font.render(current_tilegroup.capitalize(), False, (40, 40, 40))
-        label = self.font.render(current_tilegroup.capitalize(), False, (255, 255, 255))
+        if self.on_grid:
+            label_shadow = self.font.render(current_tilegroup.capitalize(), False, (40, 40, 40))
+            label = self.font.render(current_tilegroup.capitalize(), False, (255, 255, 255))
+        else:
+            label_shadow = self.font.render(self.offgrid_names[self.offgrid_tilegroup].capitalize(), False, (40, 40, 40))
+            label = self.font.render(self.offgrid_names[self.offgrid_tilegroup].capitalize(), False, (255, 255, 255))
         self.sidebar.blit(label_shadow, (13, label.get_height()+1))
         self.sidebar.blit(label, (12, label.get_height()))
             
@@ -205,44 +216,86 @@ class Editor:
         mouse = pygame.mouse.get_pressed()
         mousePos = pygame.mouse.get_pos()
 
-        assets = self.assets[current_tilegroup]
-        for i, asset in enumerate(assets):
+        if self.on_grid:
+            assets = self.assets[current_tilegroup]
+            for i, asset in enumerate(assets):
 
-            tile_size = TILE_SIZE * 1
-            asset = pygame.transform.scale(asset.copy(), (tile_size, tile_size))
-            mask = pygame.mask.from_surface(asset)
-            mask.invert()
-            shadow = mask.to_surface()
-            shadow.set_colorkey((255, 255, 255))
-            mask.invert()
+                tile_size = TILE_SIZE
+                asset = pygame.transform.scale(asset.copy(), (tile_size, tile_size))
+                mask = pygame.mask.from_surface(asset)
+                mask.invert()
+                shadow = mask.to_surface()
+                shadow.set_colorkey((255, 255, 255))
+                mask.invert()
 
-            row_num = 5
-            x = (i % row_num)  * tile_size + ((i % row_num) * 5) + 8 
-            y = (i // row_num) * tile_size + ((i // row_num) * 5) + 37
+                row_num = 5
+                x = (i % row_num)  * tile_size + ((i % row_num) * 5) + 8 
+                y = (i // row_num) * tile_size + ((i // row_num) * 5) + 37
 
-            if y + self.sidebar_yscroll < tile_size/2:
-                continue
-            elif tile_size / 2 < y + self.sidebar_yscroll < tile_size:
-                dist = tile_size - (y + self.sidebar_yscroll)
-                alpha = 255 - (255 * (dist / 11))
-                asset.set_alpha(alpha)
-                shadow.set_alpha(alpha)
+                if y + self.sidebar_yscroll < tile_size/2:
+                    continue
+                elif tile_size / 2 < y + self.sidebar_yscroll < tile_size:
+                    dist = tile_size - (y + self.sidebar_yscroll)
+                    alpha = 255 - (255 * (dist / 11))
+                    asset.set_alpha(alpha)
+                    shadow.set_alpha(alpha)
+                    
+                self.sidebar.blit(shadow, (x+2, y+2 + self.sidebar_yscroll))
                 
-            self.sidebar.blit(shadow, (x+2, y+2 + self.sidebar_yscroll))
-            
-            if pygame.Rect([x + WIDTH*0.75, y + self.sidebar_yscroll, *asset.get_size()]).collidepoint(mousePos):
-                self.sidebar.blit(asset, (x, y-2 + self.sidebar_yscroll))
-                pygame.draw.polygon(
-                    self.sidebar, 
-                    (220, 220, 220, 192), 
-                    [vec(p) + vec(x, y-2 + self.sidebar_yscroll) for p in mask.outline()], 
-                    2
-                )
+                if pygame.Rect([x + WIDTH*0.75, y + self.sidebar_yscroll, *asset.get_size()]).collidepoint(mousePos):
+                    self.sidebar.blit(asset, (x, y-2 + self.sidebar_yscroll))
+                    pygame.draw.polygon(
+                        self.sidebar, 
+                        (220, 220, 220, 192), 
+                        [vec(p) + vec(x, y-2 + self.sidebar_yscroll) for p in mask.outline()], 
+                        2
+                    )
 
-                if mouse[0]:
-                    self.current_tilevariant = i
-            else:
-                self.sidebar.blit(asset, (x, y + self.sidebar_yscroll))
+                    if mouse[0]:
+                        self.current_tilevariant = i
+                else:
+                    self.sidebar.blit(asset, (x, y + self.sidebar_yscroll))
+        else:
+            assets = self.offgrid_assets[self.offgrid_names[self.offgrid_tilegroup]]
+
+            x = 8
+            y = 37
+            for i, asset in enumerate(assets):
+                asset: pygame.Surface
+                mask = pygame.mask.from_surface(asset)
+                mask.invert()
+                shadow = mask.to_surface()
+                shadow.set_colorkey((255, 255, 255))
+                mask.invert()
+
+                if y + self.sidebar_yscroll < asset.get_height()/2:
+                    continue
+                elif asset.get_height() / 2 < y + self.sidebar_yscroll < asset.get_height():
+                    dist = asset.get_height() - (y + self.sidebar_yscroll)
+                    alpha = 255 - (255 * (dist / 11))
+                    asset.set_alpha(alpha)
+                    shadow.set_alpha(alpha)
+                    
+                self.sidebar.blit(shadow, (x+2, y+2 + self.sidebar_yscroll))
+                
+                if pygame.Rect([x + WIDTH*0.75, y + self.sidebar_yscroll, *asset.get_size()]).collidepoint(mousePos):
+                    self.sidebar.blit(asset, (x, y-2 + self.sidebar_yscroll))
+                    pygame.draw.polygon(
+                        self.sidebar, 
+                        (220, 220, 220, 192), 
+                        [vec(p) + vec(x, y-2 + self.sidebar_yscroll) for p in mask.outline()], 
+                        2
+                    )
+
+                    if mouse[0]:
+                        self.offgrid_tilevariant = i
+                else:
+                    self.sidebar.blit(asset, (x, y + self.sidebar_yscroll))
+
+                x += asset.get_width() + 5
+                if x > WIDTH/4:
+                    y += asset.height() + 5
+                    x = 8
 
     def left_right_button_update(self):
         mousePos = pygame.mouse.get_pos()
@@ -251,11 +304,19 @@ class Editor:
             self.delta_l = -1
             if mouse[0]:
                 if self.left_right_button_pressed == False:
-                    self.current_tilevariant = 0
-                    self.sidebar_yscroll = 0
-                    self.current_tilegroup -= 1
-                    if self.current_tilegroup < 0:
-                        self.current_tilegroup = len(self.asset_names) - 1
+                    if self.on_grid:
+                        self.current_tilevariant = 0
+                        self.sidebar_yscroll = 0
+                        self.current_tilegroup -= 1
+                        if self.current_tilegroup < 0:
+                            self.current_tilegroup = len(self.asset_names) - 1
+                    else:
+                        self.offgrid_tilevariant = 0
+                        self.sidebar_yscroll = 0
+                        self.offgrid_tilegroup -= 1
+                        if self.offgrid_tilegroup < 0:
+                            self.offgrid_tilegroup = len(self.offgrid_names) - 1
+
                     self.left_right_button_pressed = True
             else:
                 self.left_right_button_pressed = False
@@ -264,11 +325,18 @@ class Editor:
             self.delta_r = -1
             if mouse[0]:
                 if self.left_right_button_pressed == False:
-                    self.current_tilevariant = 0
-                    self.sidebar_yscroll = 0
-                    self.current_tilegroup += 1
-                    if self.current_tilegroup >= len(self.asset_names):
-                        self.current_tilegroup = 0
+                    if self.on_grid:
+                        self.current_tilevariant = 0
+                        self.sidebar_yscroll = 0
+                        self.current_tilegroup += 1
+                        if self.current_tilegroup >= len(self.asset_names):
+                            self.current_tilegroup = 0
+                    else:
+                        self.offgrid_tilevariant = 0
+                        self.sidebar_yscroll = 0
+                        self.offgrid_tilegroup += 1
+                        if self.offgrid_tilegroup >= len(self.offgrid_names):
+                            self.offgrid_tilegroup = 0
                     self.left_right_button_pressed = True
             else:
                 self.left_right_button_pressed = False
@@ -286,40 +354,51 @@ class Editor:
         mousePos = pygame.mouse.get_pos()
         mouse = pygame.mouse.get_pressed()
 
-        tilePos = (
-            int((mousePos[0] + self.offset.x) // TILE_SIZE), 
-            int((mousePos[1] + self.offset.y) // TILE_SIZE))
-        tile_loc = str(tilePos[0]) + ";" + str(tilePos[1])
-        self.screen.blit(current_img, (vec(tilePos) * TILE_SIZE) - self.offset)
+        if self.on_grid:
+            tilePos = (
+                int((mousePos[0] + self.offset.x) // TILE_SIZE), 
+                int((mousePos[1] + self.offset.y) // TILE_SIZE))
+            tile_loc = str(tilePos[0]) + ";" + str(tilePos[1])
+            self.screen.blit(current_img, (vec(tilePos) * TILE_SIZE) - self.offset)
+        else:  
+            self.screen.blit(current_img, [mousePos[0] - current_img.get_width()//2, mousePos[1] - current_img.get_height()//2])
 
         #breaking
         if mouse[0] or self.l_flood_start != None:
-            if keys[pygame.K_RSHIFT] or keys[pygame.K_LALT]:
-                self.flood_left(tile_loc, tilePos, 'flood')
-            else:
-                if self.l_flood_start != None:
-                    self.flood_left(tile_loc, tilePos, 'erase')
+            if self.on_grid:
+                if keys[pygame.K_RSHIFT] or keys[pygame.K_LALT]:
+                    self.flood_left(tile_loc, tilePos, 'flood')
                 else:
-                    self.left_click(tile_loc, tilePos)
+                    if self.l_flood_start != None:
+                        self.flood_left(tile_loc, tilePos, 'erase')
+                    else:
+                        self.left_click(tile_loc, tilePos)
+            else:
+                self.offgrid_left_click()
 
         #placing
         if mouse[2] or self.r_flood_start != None:
-            if keys[pygame.K_RSHIFT] or keys[pygame.K_LALT]:
-                self.flood_right(tile_loc, tilePos, 'flood', current_img)
-            else:
-                if self.r_flood_start != None:
-                    self.flood_right(tile_loc, tilePos, 'place')
+            if self.on_grid:
+                if keys[pygame.K_RSHIFT] or keys[pygame.K_LALT]:
+                    self.flood_right(tile_loc, tilePos, 'flood', current_img)
                 else:
-                    self.right_click(tile_loc, tilePos)
+                    if self.r_flood_start != None:
+                        self.flood_right(tile_loc, tilePos, 'place')
+                    else:
+                        self.right_click(tile_loc, tilePos)
+            else:
+                self.offgrid_right_click(current_img)
+                self.held = True
         else:
             self.held = False
 
         #pick-block
         if mouse[1]:
-            if tile_loc in self.tilemap.tilemap[self.current_layer if self.current_layer != -1 else 0]:
-                tile: Tile = self.tilemap.tilemap[self.current_layer if self.current_layer != -1 else 0][tile_loc]
-                self.current_tilegroup = self.asset_names.index(tile.type)
-                self.current_tilevariant = tile.variant
+            if self.on_grid:
+                if tile_loc in self.tilemap.tilemap[self.current_layer if self.current_layer != -1 else 0]:
+                    tile: Tile = self.tilemap.tilemap[self.current_layer if self.current_layer != -1 else 0][tile_loc]
+                    self.current_tilegroup = self.asset_names.index(tile.type)
+                    self.current_tilevariant = tile.variant
 
                 ##################################################################
 
@@ -394,8 +473,6 @@ class Editor:
 
                 ##################################################################
 
-
-
     def flood_left(self, tile_loc, tilePos, mode: Literal["flood", "erase"]):
 
         if self.l_flood_start == None:
@@ -435,12 +512,6 @@ class Editor:
                             img = Tile.SPRITES[tile.type][tile.variant]
                             delete: pygame.Surface = img 
                             del self.tilemap.tilemap[current_layer][tileloc]
-
-                    # if tileloc in self.tilemap.tilemap[self.current_layer]:
-                    #     tile: Tile = self.tilemap.tilemap[self.current_layer][tileloc]
-                    #     img = Tile.SPRITES[tile.type][tile.variant]
-                    #     delete: pygame.Surface = img 
-                    #     del self.tilemap.tilemap[self.current_layer][tileloc]
 
                             for x1 in range(0, delete.get_width(), 2):
                                 for y1 in range(0, delete.get_height(), 2):
@@ -510,27 +581,84 @@ class Editor:
                         [tile_Pos[0] * TILE_SIZE + TILE_SIZE/2, tile_Pos[1] * TILE_SIZE + TILE_SIZE/2], 
                     )
 
+                ##################################################################
+
+    def offgrid_left_click(self):
+        mousePos = pygame.mouse.get_pos()
+        for tile in self.tilemap.offgrid_tiles.copy():
+            tile_img = self.offgrid_assets[self.offgrid_names[self.offgrid_tilegroup]][self.offgrid_tilevariant].copy()
+            tile_r = pygame.Rect(tile.pos[0] - self.offset.x, tile.pos[1] - self.offset.y, *tile_img.get_size())
+            if tile_r.collidepoint(mousePos):
+                self.tilemap.offgrid_tiles.remove(tile)
+
+    def offgrid_right_click(self, current_img):
+        if not self.held:
+            mousePos = pygame.mouse.get_pos()
+            pos = [mousePos[0] - current_img.get_width()//2 + self.offset.x, mousePos[1] - current_img.get_height()//2 + self.offset.y]
+            
+            if pos not in [t.pos for t in self.tilemap.offgrid_tiles]:
+                self.tilemap.add_offgrid_tile(
+                    type = self.offgrid_names[self.offgrid_tilegroup],
+                    variant = self.offgrid_tilevariant,
+                    pos = pos
+                )
+                    
+                PlaceParticle(
+                    self,
+                    [self.particles],
+                    [pos[0] + current_img.get_width() // 2, pos[1] + current_img.get_height() // 2], 
+                )
+
         ##################################################################################
 
     def handle_events(self):
+        keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
 
             elif event.type == pygame.MOUSEWHEEL:
                 if not self.sidebar_open:
-                    self.current_tilevariant -= event.y
+                    if self.on_grid:
+                        if keys[pygame.K_LSHIFT]:
+                            self.current_tilegroup -= event.y
+                            if self.current_tilegroup >= len(self.asset_names):
+                                self.current_tilegroup = 0
+                            elif self.current_tilegroup < 0:
+                                self.current_tilegroup = len(self.asset_names) - 1
+                            self.current_tilevariant = 0
 
-                    if self.current_tilevariant >= len(self.assets[self.asset_names[self.current_tilegroup]]):
-                        self.current_tilevariant = 0
-                    elif self.current_tilevariant < 0:
-                        self.current_tilevariant = len(self.assets[self.asset_names[self.current_tilegroup]]) - 1
+                        else:
+                            self.current_tilevariant -= event.y
+                            if self.current_tilevariant >= len(self.assets[self.asset_names[self.current_tilegroup]]):
+                                self.current_tilevariant = 0
+                            elif self.current_tilevariant < 0:
+                                self.current_tilevariant = len(self.assets[self.asset_names[self.current_tilegroup]]) - 1
+
+                    else:
+                        if keys[pygame.K_LSHIFT]:
+                            self.offgrid_tilegroup -= event.y
+                            if self.offgrid_tilegroup >= len(self.offgrid_names):
+                                self.offgrid_tilegroup = 0
+                            elif self.offgrid_tilegroup < 0:
+                                self.offgrid_tilegroup = len(self.offgrid_names) - 1
+                            self.offgrid_tilevariant = 0
+
+                        else:
+                            self.offgrid_tilevariant -= event.y
+                            if self.offgrid_tilevariant >= len(self.offgrid_assets[self.offgrid_names[self.offgrid_tilegroup]]):
+                                self.offgrid_tilevariant = 0
+                            elif self.offgrid_tilevariant < 0:
+                                self.offgrid_tilevariant = len(self.offgrid_assets[self.offgrid_names[self.offgrid_tilegroup]]) - 1
                 else:
                     self.sidebar_yscroll = min(0, self.sidebar_yscroll + event.y * 8)
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     self.running = False
+
+                elif event.key == pygame.K_g:
+                    self.on_grid = not self.on_grid
 
                 elif event.key == pygame.K_TAB:
                     if self.sidebar_open == False:
@@ -548,7 +676,6 @@ class Editor:
                 elif event.key == pygame.K_PERIOD:
                     self.current_layer += 1
 
-                keys = pygame.key.get_pressed()
                 if event.key == pygame.K_s and (keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]):
                     self.tilemap.save()
                 if event.key == pygame.K_o and (keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]):
@@ -575,7 +702,13 @@ class Editor:
                     if pygame.Rect((tile.pos[0] * TILE_SIZE) - self.offset.x, 
                                 (tile.pos[1] * TILE_SIZE) - self.offset.y,
                                 TILE_SIZE, TILE_SIZE).colliderect(pygame.Rect(0, 0, WIDTH, HEIGHT)):
-                        tile.update(dim=(layer != self.current_layer) and (not (self.current_layer == -1)))
+                        tile.update(transparent=(layer != self.current_layer) and (not (self.current_layer == -1)), dim=layer * 20)
+
+            #render offgrid tiles
+            for tile in self.tilemap.offgrid_tiles:
+                tile.update()
+
+            #particles obviously
             self.particles.update()
 
             #axes
@@ -588,7 +721,10 @@ class Editor:
             self.screen.blit(offset_surf, (5, HEIGHT-15))
 
             #lil transparent render of current object in top left corner
-            current_tile_img = self.assets[self.asset_names[self.current_tilegroup]][self.current_tilevariant].copy()
+            if self.on_grid:
+                current_tile_img = self.assets[self.asset_names[self.current_tilegroup]][self.current_tilevariant].copy()
+            else:
+                current_tile_img = self.offgrid_assets[self.offgrid_names[self.offgrid_tilegroup]][self.offgrid_tilevariant].copy()
             current_tile_img.set_alpha(100)
             self.screen.blit(current_tile_img, (16, 16))
 
@@ -622,9 +758,10 @@ class Editor:
                 label = self.font.render("Press H for Shortcuts", False, (255, 255, 255))
                 self.screen.blit(label, label.get_rect(right=WIDTH-5, y = HEIGHT-15))
 
-            #the current layer displayed (0 for everything, otherwise the nth layer with everything else transluscent)
-            layer_label = self.font.render(f"{'Layer: '  + (str(self.current_layer) if self.current_layer > -1 else 'ALL'):>11}", False, (255, 255, 255))
-            self.screen.blit(layer_label, layer_label.get_rect(right=WIDTH-5, y=5))
+            if self.on_grid:
+                #the current layer displayed (0 for everything, otherwise the nth layer with everything else transluscent)
+                layer_label = self.font.render(f"{'Layer: '  + (str(self.current_layer) if self.current_layer > -1 else 'ALL'):>11}", False, (255, 255, 255))
+                self.screen.blit(layer_label, layer_label.get_rect(right=WIDTH-5, y=5))
 
             if self.sidebar_open:
                 self.sidebar_update()

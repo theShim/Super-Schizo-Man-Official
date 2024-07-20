@@ -8,7 +8,7 @@ import json
 import random
 from tkinter.filedialog import asksaveasfile, askopenfilename
 
-from scripts.world_loading.tiles import Tile
+from scripts.world_loading.tiles import Tile, Offgrid_Tile
 
 from scripts.config.SETTINGS import TILE_SIZE, WIDTH, HEIGHT, Z_LAYERS
 
@@ -26,13 +26,16 @@ class Tilemap:
 
     #remember to "cull" tiles in layers behind a tile infront to reduce tiles being rendered
 
-    def add_tile(self, layer: int, type: str, variant: str, tile_loc: str, pos: list[int, int]):
+    def add_tile(self, layer: int, type: str, variant: int, tile_loc: str, pos: list[int, int]):
         #adding a new layer dict if it doesnt exist. this will need to be culled later to avoid 
         #tiles "behind" other tiles being blitted unnecessarily, and also cull empty dicts for file storage
         if layer not in self.tilemap.keys():
             self.tilemap[layer] = {}
 
         self.tilemap[layer][tile_loc] = Tile(self.game, type, variant, pos)
+
+    def add_offgrid_tile(self, type: str, variant: int, pos: list[int, int]):
+        self.offgrid_tiles.append(Offgrid_Tile(self.game, type, variant, pos))
 
         ##################################################################################
 
@@ -58,3 +61,79 @@ class Tilemap:
                             else:
                                 tile.variant = random.choices(variant["choices"], variant["weights"], k=1)[0]
                         break
+
+    def save(self):
+        f = asksaveasfile(
+            filetypes=[('JSON File', ".json")], 
+            defaultextension=".json",
+            initialdir="level_data"
+        )
+        if f:
+            tilemap = {}
+            for layer in self.tilemap:
+                tilemap[layer] = {key:item.dict for key,item in self.tilemap[layer].items()}
+
+            offgrid = []
+            for tile in self.offgrid_tiles:
+                offgrid.append(tile.dict)
+
+            json.dump(
+                {
+                    'tilemap' : tilemap,
+                    'offgrid' : offgrid,
+                    'tile_size' : self.tile_size
+                }, 
+                f,
+                indent=4
+            )
+            print("Saved to", f.name)
+
+    def load(self, path: str=None):
+        if path == None:
+            f = askopenfilename(
+                title="Open existing level data...",
+                initialdir="level_data",
+                filetypes=[('JSON File', ".json")]
+            )
+        else:
+            f = path
+
+        try:
+            with open(f, 'r') as file:
+                data = json.load(file)
+        except FileNotFoundError as err:
+            raise FileNotFoundError(err)
+        except:
+            return
+        
+        self.tilemap = {}
+        for layer in data["tilemap"]:
+            self.tilemap[int(layer)] = {}
+
+            for dic in data["tilemap"][layer]:
+                tile_data = data["tilemap"][layer][dic]
+
+                pos = tile_data["pos"]
+                self.add_tile(
+                    int(layer), 
+                    tile_data["type"], 
+                    tile_data["variant"], 
+                    f"{int(pos[0])};{int(pos[1])}", 
+                    tile_data["pos"]
+                )
+
+                if self.editor_flag:
+                    if int(layer) not in self.game.layers:
+                        self.game.layers[int(layer)] = {}
+                    self.game.layers[int(layer)][f"{int(pos[0])};{int(pos[1])}"] = {
+                        "type" : tile_data["type"],
+                        "variant" : tile_data["variant"],
+                        "pos" : tile_data["pos"]
+                    }
+
+        for dic in data["offgrid"]:
+            self.add_offgrid_tile(
+                dic["type"],
+                dic["variant"],
+                dic["pos"]
+            )
