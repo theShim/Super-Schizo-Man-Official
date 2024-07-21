@@ -3,7 +3,7 @@ with contextlib.redirect_stdout(None):
     import pygame
     from pygame.locals import *
 
-# from scripts.world_loading.tilemap import Tilemap
+from scripts.world_loading.tilemap import Tilemap
 
 from scripts.config.SETTINGS import WIDTH, HEIGHT, FPS
 
@@ -26,11 +26,13 @@ class State_Loader:
     #storing all the states. has to be done post initialisation as the states are created after the State class below
     #is created
     def populate_states(self):
-        # from scripts.world_loading.states.splash_screen import Splash_Screen
-        # from scripts.world_loading.states.title_screen import Title_Screen
+        # from scripts.states.states.splash_screen import Splash_Screen
+        # from scripts.states.states.title_screen import Title_Screen
+
+        from scripts.states.states.debug_stage import Debug_Stage
 
         self.states = {
-            
+            "debug" : Debug_Stage(self.game)
         }
 
         #adding the first state
@@ -84,7 +86,7 @@ class State:
 
         self.name = name
         self.prev = prev #the previous state
-        # self.tilemap = Tilemap(self.game)
+        self.tilemap = Tilemap(self.game)
 
         self.bg_music = None
 

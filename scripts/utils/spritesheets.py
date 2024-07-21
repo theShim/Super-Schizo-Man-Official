@@ -1,13 +1,6 @@
 import pygame
 from scripts.config.SETTINGS import TILE_SIZE
-
-def crop(spritesheet: pygame.Surface, x, y, width, height):
-    try:
-        return spritesheet.subsurface([x, y, width, height])
-    except ValueError:
-        surf = pygame.Surface((width, height)).convert_alpha()
-        surf.blit(spritesheet, (0, 0), area=[x, y, width, height])
-        return surf
+from scripts.utils.CORE_FUNCS import crop
 
 class Spritesheet:
 

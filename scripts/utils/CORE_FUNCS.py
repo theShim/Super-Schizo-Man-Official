@@ -51,6 +51,14 @@ def bezierfy(points, samples): #no idea how this works just does, i think it's j
     pts = [ptOnCurve(points, i/samples) for i in range(samples+1)]
     return pts
 
+def crop(spritesheet: pygame.Surface, x, y, width, height):
+    try:
+        return spritesheet.subsurface([x, y, width, height])
+    except ValueError:
+        surf = pygame.Surface((width, height)).convert_alpha()
+        surf.blit(spritesheet, (0, 0), area=[x, y, width, height])
+        return surf
+
     ##############################################################################################
 
 #   FILE STUFF

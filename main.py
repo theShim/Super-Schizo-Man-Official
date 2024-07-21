@@ -9,6 +9,7 @@ with contextlib.redirect_stdout(None):
 import sys
 
 from scripts.states.state_machine import State_Loader
+from scripts.world_loading.tiles import Tile, Offgrid_Tile
 
 from scripts.config.SETTINGS import DEBUG, WINDOW_TITLE, SIZE, FPS
 from scripts.utils.CORE_FUNCS import vec
@@ -40,7 +41,8 @@ class Game:
         #various sprite groups, just to collect everything together
         self.all_sprites = pygame.sprite.Group()
 
-        self.state_loader = State_Loader(self)
+        self.cache_sprites()
+        self.state_loader = State_Loader(self, start="debug")
         self.state_loader.populate_states()
 
         if DEBUG:
@@ -57,6 +59,14 @@ class Game:
 
         pygame.event.set_blocked(None) #setting allowed events to reduce lag
         pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP, pygame.MOUSEWHEEL])
+
+    def cache_sprites(self):
+        Tile.cache_sprites()
+        Offgrid_Tile.cache_sprites()
+
+    def calculate_offset(self):
+        if pygame.key.get_pressed()[pygame.K_d]:
+            self.offset.x += 5
 
     def handle_events(self):
         for event in pygame.event.get():

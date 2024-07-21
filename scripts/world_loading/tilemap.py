@@ -3,7 +3,7 @@ with contextlib.redirect_stdout(None):
     import pygame; pygame.init()
     from pygame.locals import * 
     
-import os
+import math
 import json
 import random
 from tkinter.filedialog import asksaveasfile, askopenfilename
@@ -11,6 +11,7 @@ from tkinter.filedialog import asksaveasfile, askopenfilename
 from scripts.world_loading.tiles import Tile, Offgrid_Tile
 
 from scripts.config.SETTINGS import TILE_SIZE, WIDTH, HEIGHT, Z_LAYERS
+from scripts.utils.CORE_FUNCS import vec, crop
 
     ##############################################################################################
 
@@ -21,6 +22,7 @@ class Tilemap:
         self.tile_size = tile_size
         self.tilemap = {} #includes layers e.g. {0 : {}, 1 : {}}
         self.offgrid_tiles = []
+        self.map = None
 
         self.editor_flag = editor_flag
 
@@ -36,6 +38,30 @@ class Tilemap:
 
     def add_offgrid_tile(self, type: str, variant: int, pos: list[int, int]):
         self.offgrid_tiles.append(Offgrid_Tile(self.game, type, variant, pos))
+
+    def generate_map(self, size: list[int, int], lowest_buffer: list[int, int]):
+        map_width = size[0] * TILE_SIZE
+        map_height = size[1] * TILE_SIZE
+        lowest_x, lowest_y = lowest_buffer
+        self.map = pygame.Surface((map_width, map_height), pygame.SRCALPHA)
+
+        for layer in list(sorted(self.tilemap.keys(), reverse=True)):
+            for tile_loc in self.tilemap[layer]:
+                tile = self.tilemap[layer][tile_loc]
+                tile_pos = vec(tile.pos)
+
+                tile_pos.x -= lowest_x
+                tile_pos.y -= lowest_y
+
+                image = Tile.SPRITES[tile.type][tile.variant].copy()
+
+                if (dim := layer * 20) != 0:
+                    dark = pygame.mask.from_surface(image).to_surface(setcolor=(0, 0, 0, 255), unsetcolor=(255, 255, 255))
+                    dark.set_colorkey((255, 255, 255))
+                    dark.set_alpha(255 * (dim / 100))
+                    image.blit(dark, (0, 0))
+
+                self.map.blit(image, tile_pos * TILE_SIZE)
 
         ##################################################################################
 
@@ -106,6 +132,12 @@ class Tilemap:
         except:
             return
         
+        if not self.editor_flag: 
+            tile_x = set()
+            tile_y = set()
+            lowest_x = math.inf
+            lowest_y = math.inf
+        
         self.tilemap = {}
         for layer in data["tilemap"]:
             self.tilemap[int(layer)] = {}
@@ -131,9 +163,32 @@ class Tilemap:
                         "pos" : tile_data["pos"]
                     }
 
+                else:
+                    if int(pos[0]) not in tile_x:
+                        tile_x.add(int(pos[0]))
+                    if int(pos[1]) not in tile_y:
+                        tile_y.add(int(pos[1]))
+
+                    if int(pos[0]) < lowest_x:
+                        lowest_x = int(pos[0])
+                    if int(pos[1]) < lowest_y:
+                        lowest_y = int(pos[1])
+
         for dic in data["offgrid"]:
             self.add_offgrid_tile(
                 dic["type"],
                 dic["variant"],
                 dic["pos"]
             )
+
+        if not self.editor_flag: 
+            self.max_tile_x = len(tile_x)
+            self.max_tile_y = len(tile_y)
+            self.generate_map([self.max_tile_x, self.max_tile_y], [lowest_x, lowest_y])
+
+        ##################################################################################
+
+    def render(self):
+        section_map = crop(self.map, self.game.offset.x, self.game.offset.y, WIDTH, HEIGHT)
+        section_map.set_colorkey((0, 0, 0))
+        self.game.screen.blit(section_map, (0, 0))
