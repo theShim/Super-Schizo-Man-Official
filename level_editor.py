@@ -183,12 +183,12 @@ class Editor:
 
         #tile title
         if self.on_grid:
-            label_shadow = self.font.render(current_tilegroup.capitalize(), False, (40, 40, 40))
+            label_shadow = self.font.render(current_tilegroup.capitalize(), False, (10, 10, 10))
             label = self.font.render(current_tilegroup.capitalize(), False, (255, 255, 255))
         else:
-            label_shadow = self.font.render(self.offgrid_names[self.offgrid_tilegroup].capitalize(), False, (40, 40, 40))
+            label_shadow = self.font.render(self.offgrid_names[self.offgrid_tilegroup].capitalize(), False, (10, 10, 10))
             label = self.font.render(self.offgrid_names[self.offgrid_tilegroup].capitalize(), False, (255, 255, 255))
-        self.sidebar.blit(label_shadow, (13, label.get_height()+1))
+        self.sidebar.blit(label_shadow, (14, label.get_height()+2))
         self.sidebar.blit(label, (12, label.get_height()))
             
         #the left and right buttons

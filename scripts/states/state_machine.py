@@ -98,16 +98,19 @@ class State:
         #         self.game.music_player.set_vol(vol=1, channel="bg")
         #         self.game.music_player.play(self.bg_music, "bg", loop=True, fade_in=1000)
 
+        self.tilemap.nature_manager.update()
+        self.particle_manager.update()
+
         self.game.calculate_offset() #camera
         self.render()
 
     def render(self):
-        self.tilemap.render()
-
         for spr in sorted(
                 (
                     self.game.all_sprites.sprites() + 
-                    [tile for tile in self.tilemap.offgrid_render()]
+                    [tile for tile in self.tilemap.offgrid_render()] + 
+                    self.tilemap.nature_manager.render() + 
+                    self.tilemap.render()
                 ), 
                 key=lambda s: s.z
             ):

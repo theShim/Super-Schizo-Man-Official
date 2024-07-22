@@ -33,13 +33,14 @@ ENVIRONMENT_SETTINGS: dict[str, bool | int] = {
 TILE_SIZE = 24
 Z_LAYERS: dict[str , int] = {
     "background offgrid" : 4,
+    "background tiles" : 4.5,
     "background particle" : 5,
     "player_dash" : 5.5,
     "player" : 6,
     "partner" : 6.5,
     "items" : 7,
     "midground offgrid" : 8,
-    "tiles" : 9,
+    "foreground tiles" : 9,
     "attacks": 10, 
     "foreground offgrid" : 11,
     "foreground particle" : 12,

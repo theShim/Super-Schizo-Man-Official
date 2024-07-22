@@ -9,6 +9,7 @@ with contextlib.redirect_stdout(None):
 import sys
 
 from scripts.entities.player import Player
+from scripts.nature.nature_tiles.grass import Grass_Manager
 from scripts.states.state_machine import State_Loader
 from scripts.world_loading.tiles import Tile, Offgrid_Tile
 
@@ -70,6 +71,7 @@ class Game:
         Tile.cache_sprites()
         Offgrid_Tile.cache_sprites()
         Player.cache_sprites()
+        Grass_Manager.cache_sprites()
 
     def calculate_offset(self):
         #have the screen offset kinda lerp to the player location

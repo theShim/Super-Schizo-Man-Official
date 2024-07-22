@@ -51,7 +51,7 @@ class Tile(pygame.sprite.Sprite):
         self.type = type_ #tile type e.g. grass, the folder
         self.variant = variant #tile variant e.g. grass_8, the asset itself
         self.pos = pos
-        self.z = Z_LAYERS["tiles"]
+        self.z = Z_LAYERS["foreground tiles"]
 
     #dictionary object used for json saving
     @property

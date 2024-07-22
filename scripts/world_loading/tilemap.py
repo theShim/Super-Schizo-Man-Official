@@ -8,6 +8,7 @@ import json
 import random
 from tkinter.filedialog import asksaveasfile, askopenfilename
 
+from scripts.nature.manager import Nature_Manager
 from scripts.world_loading.tiles import Tile, Offgrid_Tile
 
 from scripts.config.SETTINGS import TILE_SIZE, WIDTH, HEIGHT, Z_LAYERS
@@ -27,6 +28,8 @@ NEIGHBOUR_OFFSETS = [
     (1, 1)
 ]
 
+NATURE_TILES = {"grass", "water"}
+
     ##############################################################################################
 
 class Tilemap:
@@ -36,8 +39,13 @@ class Tilemap:
         self.tile_size = tile_size
         self.tilemap = {} #includes layers e.g. {0 : {}, 1 : {}}
         self.offgrid_tiles = []
+
+        self.back_map = None
+        self.front_map = None
         self.map = None
         self.lowest_x, self.lowest_y = 0, 0
+
+        self.nature_manager = Nature_Manager(self.game)
 
         self.editor_flag = editor_flag
 
@@ -52,13 +60,21 @@ class Tilemap:
         self.tilemap[layer][tile_loc] = Tile(self.game, type, variant, pos)
 
     def add_offgrid_tile(self, type: str, variant: int, pos: list[int, int]):
-        self.offgrid_tiles.append(Offgrid_Tile.create_offgrid_tile(self.game, type, variant, pos))
+        if self.editor_flag:
+            return self.offgrid_tiles.append(Offgrid_Tile(self.game, type, variant, pos))
+        
+        if type in NATURE_TILES:
+            self.nature_manager.add_tile(type, pos, variant)
+        else:
+            return self.offgrid_tiles.append(Offgrid_Tile.create_offgrid_tile(self.game, type, variant, pos))
 
     def generate_map(self, size: list[int, int], lowest_buffer: list[int, int]):
         map_width = size[0] * TILE_SIZE
         map_height = size[1] * TILE_SIZE
         self.lowest_x, self.lowest_y = lowest_buffer
         self.map = pygame.Surface((map_width, map_height), pygame.SRCALPHA)
+        self.back_map = pygame.Surface((map_width, map_height), pygame.SRCALPHA)
+        self.front_map = pygame.Surface((map_width, map_height), pygame.SRCALPHA)
 
         for layer in list(sorted(self.tilemap.keys(), reverse=True)):
             for tile_loc in self.tilemap[layer]:
@@ -77,6 +93,14 @@ class Tilemap:
                     image.blit(dark, (0, 0))
 
                 self.map.blit(image, tile_pos * TILE_SIZE)
+
+                if layer == 0:
+                    self.front_map.blit(image, tile_pos * TILE_SIZE)
+                else:
+                    self.back_map.blit(image, tile_pos * TILE_SIZE)
+
+        self.back_map = Map_Container(self.game, self.back_map, self.lowest_x, self.lowest_y, Z_LAYERS["background tiles"])
+        self.front_map = Map_Container(self.game, self.front_map, self.lowest_x, self.lowest_y, Z_LAYERS["foreground tiles"])
 
         ##################################################################################
 
@@ -225,12 +249,29 @@ class Tilemap:
         ##################################################################################
 
     def render(self):
-        section_map = crop(self.map, self.game.offset.x - self.lowest_x * TILE_SIZE, self.game.offset.y - self.lowest_y * TILE_SIZE, WIDTH, HEIGHT)
-        section_map.set_colorkey((0, 0, 0))
-        self.game.screen.blit(section_map, (0, 0))
+        # section_map = crop(self.map, self.game.offset.x - self.lowest_x * TILE_SIZE, self.game.offset.y - self.lowest_y * TILE_SIZE, WIDTH, HEIGHT)
+        # section_map.set_colorkey((0, 0, 0))
+        # self.game.screen.blit(section_map, (0, 0))
+        return [self.front_map, self.back_map]
 
     def offgrid_render(self):
         for tile in self.offgrid_tiles:
             if (self.game.offset.x - TILE_SIZE < tile.pos[0] < self.game.offset.x + WIDTH and
                 self.game.offset.y - TILE_SIZE < tile.pos[1] < self.game.offset.y + HEIGHT):
                 yield tile
+
+
+
+class Map_Container:
+    def __init__(self, game, map, lowest_x, lowest_y, z):
+        self.game = game
+        self.z = z
+
+        self.map = map
+        self.lowest_x = lowest_x
+        self.lowest_y = lowest_y
+
+    def update(self):
+        section_map = crop(self.map, self.game.offset.x - self.lowest_x * TILE_SIZE, self.game.offset.y - self.lowest_y * TILE_SIZE, WIDTH, HEIGHT)
+        section_map.set_colorkey((0, 0, 0))
+        self.game.screen.blit(section_map, (0, 0))

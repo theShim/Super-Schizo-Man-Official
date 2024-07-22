@@ -5111,6 +5111,126 @@
                 183.0
             ],
             "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                562.0,
+                136.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                591.0,
+                136.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                617.0,
+                136.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                640.0,
+                136.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                668.0,
+                136.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                697.0,
+                136.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                860.0,
+                64.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                885.0,
+                64.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                910.0,
+                64.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                939.0,
+                64.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                964.0,
+                64.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                992.0,
+                64.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                1018.0,
+                64.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                1044.0,
+                64.0
+            ],
+            "variant": 0
+        },
+        {
+            "type": "grass",
+            "pos": [
+                1070.0,
+                64.0
+            ],
+            "variant": 0
         }
     ],
     "tile_size": 24

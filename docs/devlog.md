@@ -33,8 +33,16 @@ Works well for now, although I am skeptical I won't run into problems in the fut
 
 ![alt text](image.png)
 
-# 22/07/2024 | Particles
+# 22/07/2024 | Particles and Touching Grass
 
 Pretty obvious, but I addded a particle system. It's pretty similar to the old implementation, just all of it encased in its own particle manager. I also decided to not split background and foreground particles, rather just using the sprite's "z" value.
 
+For the first particle, I made a simple fire particle for torch sprites. I'll probably also make different ones for slanted torches on the side of walls.
+
 ![alt text](image-1.png)
+
+Now, a kryptonite for many programmers - myself included - I've incorporated grass. My old grass looked pretty janky, since there was no interpolation, it just moved from one state to another if the player was nearby. To prevent that, I employed a flawless strategy: Plagiarism.
+
+ This is literally just DaFluffyPotato's grass manager, just modified to work with my assets and stuff. I also added the ability to have different types of grass which will be useful for other levels, different grass types, flowers etc.
+
+![alt text](image-2.png)

@@ -37,7 +37,7 @@ class Fire_Particle(pygame.sprite.Sprite):
         self.max_size = 2 * self.radius * self.alpha_glow * self.alpha_layers ** 2
 
     def burn(self):
-        self.radius -= self.burn_rate
+        self.radius -= self.burn_rate * (self.game.dt * 100)
         if self.radius < 0:
             self.kill()
 
@@ -51,8 +51,8 @@ class Fire_Particle(pygame.sprite.Sprite):
 
             return True
         
-        self.pos.x += random.uniform(-self.radius, self.radius) / 2
-        self.pos.y -= (random.uniform(5, 8) - self.radius) / 16
+        self.pos.x += (self.game.dt * 100) * random.uniform(-self.radius, self.radius) / 2
+        self.pos.y -= (self.game.dt * 100) * (random.uniform(5, 8) - self.radius) / 16
 
         self.yellow += 2
         if self.yellow > 255:

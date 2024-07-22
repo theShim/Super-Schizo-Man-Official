@@ -19,7 +19,7 @@ class Torch(Offgrid_Tile):
 
         self.SPRITES = Offgrid_Tile.SPRITES["torch"]
 
-        self.flame_intensity = 30
+        self.flame_intensity = 24
         self.start = True
 
     def update(self):

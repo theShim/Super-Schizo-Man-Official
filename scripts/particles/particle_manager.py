@@ -24,7 +24,7 @@ class Particle_Manager:
         self.start = True
 
     def sprites(self):
-        return self.particles.sprites()
+        return list(filter(lambda spr: pygame.Rect(0, 0, WIDTH, HEIGHT).collidepoint(vec(spr.pos) - self.game.offset), self.particles.sprites()))
 
     def add_particle(self, particle_type, **kwargs):
         particle = {
