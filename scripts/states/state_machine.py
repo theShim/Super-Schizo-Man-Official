@@ -3,6 +3,7 @@ with contextlib.redirect_stdout(None):
     import pygame
     from pygame.locals import *
 
+from scripts.particles.particle_manager import Particle_Manager
 from scripts.world_loading.tilemap import Tilemap
 
 from scripts.config.SETTINGS import WIDTH, HEIGHT, FPS
@@ -87,6 +88,7 @@ class State:
         self.name = name
         self.prev = prev #the previous state
         self.tilemap = Tilemap(self.game)
+        self.particle_manager = Particle_Manager(self.game, self)
 
         self.bg_music = None
 
@@ -102,7 +104,13 @@ class State:
     def render(self):
         self.tilemap.render()
 
-        for spr in sorted(self.game.all_sprites.sprites(), key=lambda s: s.z):
+        for spr in sorted(
+                (
+                    self.game.all_sprites.sprites() + 
+                    [tile for tile in self.tilemap.offgrid_render()]
+                ), 
+                key=lambda s: s.z
+            ):
             spr.update()
 
 class Cutscene(State):

@@ -32,3 +32,9 @@ From my old version of the game, I've optimised it much more. Rather than blitti
 Works well for now, although I am skeptical I won't run into problems in the future especially for niche collision cases.
 
 ![alt text](image.png)
+
+# 22/07/2024 | Particles
+
+Pretty obvious, but I addded a particle system. It's pretty similar to the old implementation, just all of it encased in its own particle manager. I also decided to not split background and foreground particles, rather just using the sprite's "z" value.
+
+![alt text](image-1.png)

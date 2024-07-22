@@ -4,8 +4,6 @@ with contextlib.redirect_stdout(None):
     from pygame.locals import *
     
 import os
-import json
-import random
 
 from scripts.config.SETTINGS import TILE_SIZE, WIDTH, HEIGHT, Z_LAYERS
 from scripts.utils.CORE_FUNCS import add_loaded_sprite_number
@@ -93,6 +91,15 @@ class Offgrid_Tile(pygame.sprite.Sprite):
                 img.set_colorkey((0, 0, 0))
                 imgs.append(img)
             cls.SPRITES[name] = imgs
+    
+    @classmethod
+    def create_offgrid_tile(cls, game, type_, variant, pos):
+        from scripts.world_loading.custom_offgrid import Torch
+        
+        if type_ == "torch":
+            return Torch(game, variant, pos)
+        else:
+            return Offgrid_Tile(game, type_, variant, pos)
 
     def __init__(self, game, type_, variant, pos):
         super().__init__()

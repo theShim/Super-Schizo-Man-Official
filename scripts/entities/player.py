@@ -144,10 +144,9 @@ class Player(pygame.sprite.Sprite):
         ###################################################################################### 
 
     def collisions(self):
-        self.game.debugger.add_text(str(self.game.state_loader.tilemap.nearby_physics_rects(self.hitbox.center)))
         collision_tolerance = 10
         for rect in self.game.state_loader.tilemap.nearby_physics_rects(self.hitbox.center):
-            pygame.draw.rect(self.screen, (255, 0 ,0), [rect.x - self.game.offset.x, rect.y - self.game.offset.y, *rect.size], 1)
+            # pygame.draw.rect(self.screen, (255, 0 ,0), [rect.x - self.game.offset.x, rect.y - self.game.offset.y, *rect.size], 1)
             if self.hitbox.colliderect(rect):
                 
                 #if the player lands
@@ -214,5 +213,5 @@ class Player(pygame.sprite.Sprite):
         rect = spr.get_rect(center=self.hitbox.center - self.game.offset)
         self.screen.blit(spr, rect)
 
-        if DEBUG: #hitbox
-            pygame.draw.rect(self.screen, (200, 0, 0), [self.hitbox.x - self.game.offset.x, self.hitbox.y - self.game.offset.y, *self.hitbox.size], 1)
+        # if DEBUG: #hitbox
+        #     pygame.draw.rect(self.screen, (200, 0, 0), [self.hitbox.x - self.game.offset.x, self.hitbox.y - self.game.offset.y, *self.hitbox.size], 1)
