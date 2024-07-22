@@ -15,6 +15,20 @@ from scripts.utils.CORE_FUNCS import vec, crop
 
     ##############################################################################################
 
+NEIGHBOUR_OFFSETS = [
+    (-1, -1),
+    (-1, 0),
+    (0, -1),
+    (1, -1),
+    (1, 0),
+    (0, 0),
+    (-1, 1),
+    (0, 1),
+    (1, 1)
+]
+
+    ##############################################################################################
+
 class Tilemap:
     def __init__(self, game, tile_size=TILE_SIZE, editor_flag=False):
         self.game = game
@@ -23,6 +37,7 @@ class Tilemap:
         self.tilemap = {} #includes layers e.g. {0 : {}, 1 : {}}
         self.offgrid_tiles = []
         self.map = None
+        self.lowest_x, self.lowest_y = 0, 0
 
         self.editor_flag = editor_flag
 
@@ -42,7 +57,7 @@ class Tilemap:
     def generate_map(self, size: list[int, int], lowest_buffer: list[int, int]):
         map_width = size[0] * TILE_SIZE
         map_height = size[1] * TILE_SIZE
-        lowest_x, lowest_y = lowest_buffer
+        self.lowest_x, self.lowest_y = lowest_buffer
         self.map = pygame.Surface((map_width, map_height), pygame.SRCALPHA)
 
         for layer in list(sorted(self.tilemap.keys(), reverse=True)):
@@ -50,8 +65,8 @@ class Tilemap:
                 tile = self.tilemap[layer][tile_loc]
                 tile_pos = vec(tile.pos)
 
-                tile_pos.x -= lowest_x
-                tile_pos.y -= lowest_y
+                tile_pos.x -= self.lowest_x
+                tile_pos.y -= self.lowest_y
 
                 image = Tile.SPRITES[tile.type][tile.variant].copy()
 
@@ -187,8 +202,29 @@ class Tilemap:
             self.generate_map([self.max_tile_x, self.max_tile_y], [lowest_x, lowest_y])
 
         ##################################################################################
+        
+    #list of tiles currently around the (player) pos
+    def tiles_around(self, pos):
+        tiles = []
+        tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))
+        for offset in NEIGHBOUR_OFFSETS:
+            check_loc = f"{str(tile_loc[0] + offset[0])};{str(tile_loc[1] + offset[1])}"
+            layer = 0
+            if check_loc in self.tilemap[layer]:
+                tiles.append(self.tilemap[layer][check_loc])
+        return tiles
+
+    #list of tiles currently around the (player) pos that are collide-able
+    def nearby_physics_rects(self, pos):
+        rects = []
+        for tile in self.tiles_around(pos):
+            # if tile.type in PHYSICS_TILES:
+                rects.append(pygame.Rect((tile.pos[0]) * self.tile_size, (tile.pos[1]) * self.tile_size, self.tile_size, self.tile_size))
+        return rects
+
+        ##################################################################################
 
     def render(self):
-        section_map = crop(self.map, self.game.offset.x, self.game.offset.y, WIDTH, HEIGHT)
+        section_map = crop(self.map, self.game.offset.x - self.lowest_x * TILE_SIZE, self.game.offset.y - self.lowest_y * TILE_SIZE, WIDTH, HEIGHT)
         section_map.set_colorkey((0, 0, 0))
         self.game.screen.blit(section_map, (0, 0))

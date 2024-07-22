@@ -22,3 +22,13 @@ With a basic save and load function, and some darkening to layers further in the
 ## 20/07/2024 | Offgrid Tiles
 
 Completely forgot about them, but they're added now. Added them to the tab menu too.
+
+# 22/07/2024 | Hello World!
+
+With a bit of struggle, I eventually got the tilemaps generated from the level editor to be compatible with the game. 
+
+From my old version of the game, I've optimised it much more. Rather than blitting every tile on screen every frame, I blitted them once to a "map surface" at the beginning of run time, and use the camera offset to blit a portion of the screen once per frame. 
+
+Works well for now, although I am skeptical I won't run into problems in the future especially for niche collision cases.
+
+![alt text](image.png)

@@ -8,11 +8,12 @@ with contextlib.redirect_stdout(None):
     
 import sys
 
+from scripts.entities.player import Player
 from scripts.states.state_machine import State_Loader
 from scripts.world_loading.tiles import Tile, Offgrid_Tile
 
-from scripts.config.SETTINGS import DEBUG, WINDOW_TITLE, SIZE, FPS
-from scripts.utils.CORE_FUNCS import vec
+from scripts.config.SETTINGS import DEBUG, WINDOW_TITLE, SIZE, FPS, WIDTH, HEIGHT, CAMERA_FOLLOW_SPEED
+from scripts.utils.CORE_FUNCS import vec, check_loaded_sprite_number
 from scripts.utils.debugger import Debugger
 
 pygame.Rect = pygame.FRect
@@ -38,16 +39,21 @@ class Game:
         self.running = True
         self.offset = vec()
 
+        self.cache_sprites()
+
         #various sprite groups, just to collect everything together
         self.all_sprites = pygame.sprite.Group()
+        self.entities = pygame.sprite.Group()
+        self.player = Player(self, [self.all_sprites, self.entities])
 
-        self.cache_sprites()
         self.state_loader = State_Loader(self, start="debug")
         self.state_loader.populate_states()
 
         if DEBUG:
             self.debugger = Debugger()
             self.fps_clock = pygame.time.Clock()
+
+        check_loaded_sprite_number()
 
     def initialise(self):
         pygame.init()  #general pygame
@@ -63,10 +69,20 @@ class Game:
     def cache_sprites(self):
         Tile.cache_sprites()
         Offgrid_Tile.cache_sprites()
+        Player.cache_sprites()
 
     def calculate_offset(self):
-        if pygame.key.get_pressed()[pygame.K_d]:
-            self.offset.x += 5
+        #have the screen offset kinda lerp to the player location
+        self.offset.x += (self.player.rect.centerx - WIDTH/2 - self.offset.x) / CAMERA_FOLLOW_SPEED
+        self.offset.y += (self.player.rect.centery - HEIGHT/2 - self.offset.y) / CAMERA_FOLLOW_SPEED
+
+        #restricting the offsets
+        #MAKE THIS DIFFERENT ACCORDING TO CUSTOM STAGE SIZES LATER
+        #e.g. if self.offset.x < self.stage.offset.bounds[0]: x = self.stage.offset.bounds[0]
+        if self.offset.x < 0:
+            self.offset.x = 0
+        # if self.offset.x > math.inf:
+        #     self.offset.x = math.inf
 
     def handle_events(self):
         for event in pygame.event.get():
