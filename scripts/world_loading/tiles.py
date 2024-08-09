@@ -13,7 +13,7 @@ from scripts.utils.spritesheets import Spritesheet
 
 class Tile(pygame.sprite.Sprite):
 
-    AUTO_TILE_TYPES = {'grass', 'stone'}
+    AUTO_TILE_TYPES = {'grass', 'stone', "midground"}
     AUTO_TILE_MAP = {
         "grass" : {
             tuple(sorted([(1, 0), (0, 1)])): 0,                                #top-left
@@ -26,6 +26,17 @@ class Tile(pygame.sprite.Sprite):
             tuple(sorted([(-1, 0), (0, -1), (1, 0)])): 7,                      #bottom
             tuple(sorted([(-1, 0), (0, -1)])): 8,                              #bottom-right
             # tuple(sorted([(0, -1)])): 9,                                     #lonesome top
+        },
+        "midground" : {
+            tuple(sorted([(1, 0), (0, 1)])): {"choices" : list(range(0, 12)), "weights" : [1 for i in range(12)]},                           
+            tuple(sorted([(1, 0), (0, 1), (-1, 0)])): {"choices" : list(range(12, 24)), "weights" : [1 for i in range(12)]},             
+            tuple(sorted([(-1, 0), (0, 1)])): {"choices" : list(range(24, 36)), "weights" : [1 for i in range(12)]},                           
+            tuple(sorted([(1, 0), (0, -1), (0, 1)])): {"choices" : list(range(36, 48)), "weights" : [1 for i in range(12)]},              
+            tuple(sorted([(1, 0), (-1, 0), (0, 1), (0, -1)])): {"choices" : list(range(48, 60)), "weights" : [1 for i in range(12)]}, 
+            tuple(sorted([(-1, 0), (0, -1), (0, 1)])): {"choices" : list(range(60, 72)), "weights" : [1 for i in range(12)]},              
+            tuple(sorted([(1, 0), (0, -1)])): {"choices" : list(range(72, 84)), "weights" : [1 for i in range(12)]},                             
+            tuple(sorted([(-1, 0), (0, -1), (1, 0)])): {"choices" : list(range(84, 96)), "weights" : [1 for i in range(12)]},               
+            tuple(sorted([(-1, 0), (0, -1)])): {"choices" : list(range(96, 108)), "weights" : [1 for i in range(12)]},                             
         }
     }
 
@@ -39,7 +50,10 @@ class Tile(pygame.sprite.Sprite):
 
         for name in os.listdir(path):
             if not name.endswith(".png"):
-                imgs = Spritesheet.tile_handler(name)
+                if name.startswith("midground"):
+                    imgs = Spritesheet.midground_handler(name)
+                else:
+                    imgs = Spritesheet.tile_handler(name)
                 add_loaded_sprite_number(len(imgs))
                 cls.SPRITES[name.lower()] = imgs
 

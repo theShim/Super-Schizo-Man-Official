@@ -8,6 +8,8 @@ import random
 import math
 
 from scripts.particles.fire import Fire_Particle
+from scripts.particles.floating_lights import Floating_Light
+from scripts.particles.bord import Bord_After_Image, Bord_Particle
 
 from scripts.utils.CORE_FUNCS import vec
 from scripts.config.SETTINGS import Z_LAYERS, WIDTH, HEIGHT, ENVIRONMENT_SETTINGS
@@ -28,10 +30,17 @@ class Particle_Manager:
 
     def add_particle(self, particle_type, **kwargs):
         particle = {
-            "fire" : Fire_Particle
+            "fire" : Fire_Particle,
+            "float light" : Floating_Light,
+            "bord after image" : Bord_After_Image,
+            "bord particle" : Bord_Particle
         }[particle_type]
 
         particle(self.game, [self.game.all_sprites, self.particles], *kwargs.values())
 
     def update(self):
-        if self.start: self.start = False
+        if self.start: 
+            for i in range(10):
+                self.add_particle("float light", pos=vec(random.uniform(0, WIDTH), random.uniform(0, HEIGHT)))
+
+            self.start = False

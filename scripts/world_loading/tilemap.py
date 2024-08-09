@@ -228,7 +228,7 @@ class Tilemap:
         ##################################################################################
         
     #list of tiles currently around the (player) pos
-    def tiles_around(self, pos):
+    def tiles_around(self, pos) -> list[Tile]:
         tiles = []
         tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))
         for offset in NEIGHBOUR_OFFSETS:
@@ -239,12 +239,34 @@ class Tilemap:
         return tiles
 
     #list of tiles currently around the (player) pos that are collide-able
-    def nearby_physics_rects(self, pos):
+    def nearby_physics_rects(self, pos) -> list[pygame.Rect]:
         rects = []
         for tile in self.tiles_around(pos):
             # if tile.type in PHYSICS_TILES:
                 rects.append(pygame.Rect((tile.pos[0]) * self.tile_size, (tile.pos[1]) * self.tile_size, self.tile_size, self.tile_size))
         return rects
+    
+    def enemy_tile_infront_to_walk(self, pos, direction:str, dist: float = 45) -> bool:
+
+        if direction == "right":
+            offset = (1, 0)
+        else:
+            offset = (-1, 0)
+        tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))
+        check_loc = f"{str(tile_loc[0] + offset[0])};{str(tile_loc[1]+offset[1])}"
+        if check_loc in self.tilemap[(layer := 0)]:
+            return False
+
+        offsets = [((i+1) * (-1 if direction == "left" else 1), 1) for i in range((dist // self.tile_size) + 1)]
+        can = 0
+
+        for offset in offsets:
+            tile_loc = (int(pos[0] // self.tile_size), int(pos[1] // self.tile_size))
+            check_loc = f"{str(tile_loc[0] + offset[0])};{str(tile_loc[1]+offset[1])}"
+            if check_loc in self.tilemap[(layer := 0)]:
+                can += 1
+        
+        return can == len(offsets)
 
         ##################################################################################
 

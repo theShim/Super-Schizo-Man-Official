@@ -37,6 +37,7 @@ Z_LAYERS: dict[str , int] = {
     "background particle" : 5,
     "player_dash" : 5.5,
     "player" : 6,
+    "entities" : 6.5,
     "partner" : 6.5,
     "items" : 7,
     "midground offgrid" : 8,

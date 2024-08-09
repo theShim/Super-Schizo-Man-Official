@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
     @classmethod
     def cache_sprites(cls):
         Player.SPRITES = {}
+        scales = {1 : 2, 2: 1}
         for char_num in os.listdir('assets/entities/players'):
             path = 'assets/entities/players/' + str(char_num)
             Player.SPRITES[int(char_num)] = {}
@@ -27,8 +28,29 @@ class Player(pygame.sprite.Sprite):
             for anim in os.listdir(path):
                 imgs = []
                 for move_name in os.listdir(f"{path}/{anim}"):
-                    img = pygame.image.load(f"{path}/{anim}/{move_name}").convert_alpha()
-                    img = pygame.transform.scale(img, pygame.math.Vector2(img.get_size())*2)
+                    base = pygame.image.load(f"{path}/{anim}/{move_name}").convert_alpha()
+                    img = pygame.Surface(base.get_size())
+
+                    #solid outline
+                    for y in range(img.height):
+                        for x in range(img.width):
+                            if base.get_at((x, y)) == (0, 0, 0, 0):
+                                for offset in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                                    x1 = sorted([0, base.width-1, x + offset[0]])[1]
+                                    y1 = sorted([0, base.height-1, y + offset[1]])[1]
+                                    if base.get_at((x1, y1)) != (0, 0, 0, 0):
+                                        img.set_at((x, y), (1, 0, 0))
+                                        break
+                            else:
+                                img.set_at((x, y), base.get_at((x, y)))
+
+                    img = pygame.transform.scale(img, pygame.math.Vector2(img.get_size())*scales[int(char_num)])
+
+                    #mask outline
+                    # copy = img.copy()
+                    # pygame.draw.polygon(img, (1, 0, 0, 192), pygame.mask.from_surface(img).outline(), 2)
+                    # img.blit(copy, (0, 0))
+
                     img.set_colorkey((0, 0, 0))
                     imgs.append(img)
                 add_loaded_sprite_number(len(imgs))
@@ -57,7 +79,10 @@ class Player(pygame.sprite.Sprite):
         self.jump_vel = 10
         self.jumps = 2 #total number of jumps left
         self.jumpHeld = False #ensures player only jumps once
+
         self.landed = False #checks if the player is currently on the floor
+        self.squish = 0
+        self.squish_vel = 0
 
     #actual colliding rect
     @property
@@ -162,10 +187,14 @@ class Player(pygame.sprite.Sprite):
                     #     #         colour=(c, c, c)
                     #     #     )
 
-                    self.rect.bottom = rect.top + 1
+                    if self.landed == False:
+                        self.landed = True
+                        if self.vel.y > 8:
+                            self.squish = self.vel.y * 0.75
+
                     self.vel.y = 0 #reset y velocity
+                    self.rect.bottom = rect.top + 1
                     self.jumps = 2 #reset jumps
-                    self.landed = True
                     break
                 
                 #ceiling
@@ -206,12 +235,31 @@ class Player(pygame.sprite.Sprite):
         self.animate()
         self.draw()
 
-    def draw(self):
-        spr = self.image #get sprite and flip if needed
+    def get_image(self):
+        spr = self.image
 
-        # spr = self.blink(spr) #get the blinking sprite
-        rect = spr.get_rect(center=self.hitbox.center - self.game.offset)
+        if self.squish > 0:
+            if self.squish < 0.01: 
+                self.squish = 0
+
+            self.squish_vel += (tension := 0.01) * (-self.squish) - self.squish_vel * (dampening := 0.1)
+            self.squish += self.squish_vel
+
+            spr = pygame.transform.scale(spr, (spr.width + self.squish / 2, spr.height - self.squish))
+
+        self.game.debugger.add_text(f"{self.squish}")
+        
+        return spr
+
+    def draw(self):
+        spr = self.get_image() #get sprite and flip if needed
+
+        rect = spr.get_rect(midbottom=self.hitbox.midbottom - self.game.offset)
         self.screen.blit(spr, rect)
+
+        light = pygame.Surface(((s := max(self.size) * 1.2), s), pygame.SRCALPHA)
+        pygame.draw.circle(light, (255, 255, 255, 120), vec(light.get_size())/2, light.width/2)
+        self.game.state_loader.current_state.dark.blit(light, light.get_rect(center=rect.center), special_flags=pygame.BLEND_RGBA_ADD)
 
         # if DEBUG: #hitbox
         #     pygame.draw.rect(self.screen, (200, 0, 0), [self.hitbox.x - self.game.offset.x, self.hitbox.y - self.game.offset.y, *self.hitbox.size], 1)

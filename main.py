@@ -1,4 +1,6 @@
 import os
+
+import pygame.transform
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 import contextlib
@@ -9,12 +11,13 @@ with contextlib.redirect_stdout(None):
 import sys
 
 from scripts.entities.player import Player
+from scripts.entities.bord import Bord
 from scripts.nature.nature_tiles.grass import Grass_Manager
 from scripts.states.state_machine import State_Loader
 from scripts.world_loading.tiles import Tile, Offgrid_Tile
 
 from scripts.config.SETTINGS import DEBUG, WINDOW_TITLE, SIZE, FPS, WIDTH, HEIGHT, CAMERA_FOLLOW_SPEED
-from scripts.utils.CORE_FUNCS import vec, check_loaded_sprite_number
+from scripts.utils.CORE_FUNCS import vec, check_loaded_sprite_number, lerp
 from scripts.utils.debugger import Debugger
 
 pygame.Rect = pygame.FRect
@@ -34,18 +37,21 @@ class Game:
 
         #initalising pygame window
         flags = pygame.RESIZABLE | pygame.SCALED
-        self.screen = pygame.display.set_mode(SIZE, flags)
+        self.screen = pygame.display.set_mode(SIZE, flags, vsync=1)
         pygame.display.toggle_fullscreen()
         self.clock = pygame.time.Clock()
         self.running = True
         self.offset = vec()
+        self.zoom = 0
+        self.zoom_flag = True
 
         self.cache_sprites()
 
         #various sprite groups, just to collect everything together
         self.all_sprites = pygame.sprite.Group()
         self.entities = pygame.sprite.Group()
-        self.player = Player(self, [self.all_sprites, self.entities])
+        self.player = Player(self, [self.all_sprites, self.entities], char_num=2)
+        [Bord(self, [self.all_sprites, self.entities], (WIDTH/2 + (i * 10), -HEIGHT/2 + 250)) for i in range(3)]
 
         self.state_loader = State_Loader(self, start="debug")
         self.state_loader.populate_states()
@@ -71,6 +77,7 @@ class Game:
         Tile.cache_sprites()
         Offgrid_Tile.cache_sprites()
         Player.cache_sprites()
+        Bord.cache_sprites()
         Grass_Manager.cache_sprites()
 
     def calculate_offset(self):
@@ -85,6 +92,22 @@ class Game:
             self.offset.x = 0
         # if self.offset.x > math.inf:
         #     self.offset.x = math.inf
+
+    def calculate_zoom(self):
+        keys = pygame.key.get_just_pressed()
+        if keys[pygame.K_z]:
+            self.zoom_flag = not self.zoom_flag
+
+        if self.zoom_flag:
+            if self.zoom > 1.2:
+                self.zoom = lerp(self.zoom, 1.2, 1 - 0.1)
+                if abs(self.zoom - 1.2) < 0.01:
+                    self.zoom = 1.2
+        else:
+            if self.zoom < 2:
+                self.zoom = lerp(self.zoom, 2, 1 - 0.1)
+                if abs(self.zoom - 2) < 0.01:
+                    self.zoom = 2
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -108,9 +131,11 @@ class Game:
             last_time = current_time
 
             self.handle_events()
-            self.screen.fill((30, 30, 30))
+            self.screen.fill((14, 19, 32))
 
             self.state_loader.update()
+            if self.zoom != 1:
+                self.screen.blit((s := pygame.transform.scale(self.screen, vec(SIZE) * self.zoom)), s.get_rect(center=vec(SIZE) / 2))
 
             if DEBUG:
                 self.debugger.update()

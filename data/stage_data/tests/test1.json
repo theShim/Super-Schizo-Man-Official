@@ -795,7 +795,7 @@
             },
             "24;10": {
                 "type": "grass_1",
-                "variant": 4,
+                "variant": 10,
                 "pos": [
                     24,
                     10
@@ -1227,7 +1227,7 @@
             },
             "31;10": {
                 "type": "grass_1",
-                "variant": 11,
+                "variant": 4,
                 "pos": [
                     31,
                     10
@@ -1267,7 +1267,7 @@
             },
             "32;11": {
                 "type": "grass_1",
-                "variant": 4,
+                "variant": 10,
                 "pos": [
                     32,
                     11
@@ -1307,7 +1307,7 @@
             },
             "36;8": {
                 "type": "grass_1",
-                "variant": 10,
+                "variant": 4,
                 "pos": [
                     36,
                     8
@@ -1435,7 +1435,7 @@
             },
             "41;7": {
                 "type": "grass_1",
-                "variant": 11,
+                "variant": 4,
                 "pos": [
                     41,
                     7
@@ -1803,7 +1803,7 @@
             },
             "37;11": {
                 "type": "grass_1",
-                "variant": 9,
+                "variant": 4,
                 "pos": [
                     37,
                     11
@@ -2027,7 +2027,7 @@
             },
             "35;12": {
                 "type": "grass_1",
-                "variant": 10,
+                "variant": 4,
                 "pos": [
                     35,
                     12
@@ -2043,7 +2043,7 @@
             },
             "33;12": {
                 "type": "grass_1",
-                "variant": 9,
+                "variant": 4,
                 "pos": [
                     33,
                     12
@@ -2291,7 +2291,7 @@
             },
             "21;12": {
                 "type": "grass_1",
-                "variant": 10,
+                "variant": 4,
                 "pos": [
                     21,
                     12
@@ -2363,7 +2363,7 @@
             },
             "29;13": {
                 "type": "grass_1",
-                "variant": 9,
+                "variant": 4,
                 "pos": [
                     29,
                     13
@@ -2395,7 +2395,7 @@
             },
             "29;12": {
                 "type": "grass_1",
-                "variant": 4,
+                "variant": 9,
                 "pos": [
                     29,
                     12
@@ -2797,7 +2797,7 @@
             },
             "15;7": {
                 "type": "grass_1",
-                "variant": 11,
+                "variant": 4,
                 "pos": [
                     15,
                     7
@@ -2893,7 +2893,7 @@
             },
             "13;4": {
                 "type": "grass_1",
-                "variant": 11,
+                "variant": 4,
                 "pos": [
                     13,
                     4
@@ -3069,7 +3069,7 @@
             },
             "28;6": {
                 "type": "grass_1",
-                "variant": 10,
+                "variant": 4,
                 "pos": [
                     28,
                     6
@@ -3397,7 +3397,7 @@
             },
             "35;5": {
                 "type": "grass_1",
-                "variant": 4,
+                "variant": 11,
                 "pos": [
                     35,
                     5
@@ -3637,7 +3637,7 @@
             },
             "23;6": {
                 "type": "grass_1",
-                "variant": 9,
+                "variant": 4,
                 "pos": [
                     23,
                     6
@@ -3697,6 +3697,470 @@
                 "pos": [
                     27,
                     7
+                ]
+            },
+            "20;5": {
+                "type": "midground_1",
+                "variant": 38,
+                "pos": [
+                    20,
+                    5
+                ]
+            },
+            "20;4": {
+                "type": "midground_1",
+                "variant": 11,
+                "pos": [
+                    20,
+                    4
+                ]
+            },
+            "21;4": {
+                "type": "midground_1",
+                "variant": 54,
+                "pos": [
+                    21,
+                    4
+                ]
+            },
+            "21;5": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    21,
+                    5
+                ]
+            },
+            "21;3": {
+                "type": "midground_1",
+                "variant": 38,
+                "pos": [
+                    21,
+                    3
+                ]
+            },
+            "21;2": {
+                "type": "midground_1",
+                "variant": 0,
+                "pos": [
+                    21,
+                    2
+                ]
+            },
+            "22;2": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    22,
+                    2
+                ]
+            },
+            "22;3": {
+                "type": "midground_1",
+                "variant": 58,
+                "pos": [
+                    22,
+                    3
+                ]
+            },
+            "22;4": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    22,
+                    4
+                ]
+            },
+            "23;4": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    23,
+                    4
+                ]
+            },
+            "23;3": {
+                "type": "midground_1",
+                "variant": 53,
+                "pos": [
+                    23,
+                    3
+                ]
+            },
+            "23;2": {
+                "type": "midground_1",
+                "variant": 51,
+                "pos": [
+                    23,
+                    2
+                ]
+            },
+            "24;2": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    24,
+                    2
+                ]
+            },
+            "24;3": {
+                "type": "midground_1",
+                "variant": 49,
+                "pos": [
+                    24,
+                    3
+                ]
+            },
+            "24;1": {
+                "type": "midground_1",
+                "variant": 18,
+                "pos": [
+                    24,
+                    1
+                ]
+            },
+            "22;1": {
+                "type": "midground_1",
+                "variant": 9,
+                "pos": [
+                    22,
+                    1
+                ]
+            },
+            "23;1": {
+                "type": "midground_1",
+                "variant": 18,
+                "pos": [
+                    23,
+                    1
+                ]
+            },
+            "24;4": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    24,
+                    4
+                ]
+            },
+            "25;2": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    25,
+                    2
+                ]
+            },
+            "25;1": {
+                "type": "midground_1",
+                "variant": 12,
+                "pos": [
+                    25,
+                    1
+                ]
+            },
+            "26;2": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    26,
+                    2
+                ]
+            },
+            "26;1": {
+                "type": "midground_1",
+                "variant": 55,
+                "pos": [
+                    26,
+                    1
+                ]
+            },
+            "26;3": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    26,
+                    3
+                ]
+            },
+            "25;3": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    25,
+                    3
+                ]
+            },
+            "27;3": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    27,
+                    3
+                ]
+            },
+            "27;2": {
+                "type": "midground_1",
+                "variant": 55,
+                "pos": [
+                    27,
+                    2
+                ]
+            },
+            "27;1": {
+                "type": "midground_1",
+                "variant": 56,
+                "pos": [
+                    27,
+                    1
+                ]
+            },
+            "28;1": {
+                "type": "midground_1",
+                "variant": 56,
+                "pos": [
+                    28,
+                    1
+                ]
+            },
+            "28;2": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    28,
+                    2
+                ]
+            },
+            "29;1": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    29,
+                    1
+                ]
+            },
+            "27;0": {
+                "type": "midground_1",
+                "variant": 49,
+                "pos": [
+                    27,
+                    0
+                ]
+            },
+            "27;-1": {
+                "type": "midground_1",
+                "variant": 57,
+                "pos": [
+                    27,
+                    -1
+                ]
+            },
+            "26;-1": {
+                "type": "midground_1",
+                "variant": 43,
+                "pos": [
+                    26,
+                    -1
+                ]
+            },
+            "26;0": {
+                "type": "midground_1",
+                "variant": 46,
+                "pos": [
+                    26,
+                    0
+                ]
+            },
+            "26;-2": {
+                "type": "midground_1",
+                "variant": 49,
+                "pos": [
+                    26,
+                    -2
+                ]
+            },
+            "26;-3": {
+                "type": "midground_1",
+                "variant": 51,
+                "pos": [
+                    26,
+                    -3
+                ]
+            },
+            "25;-3": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    25,
+                    -3
+                ]
+            },
+            "27;-2": {
+                "type": "midground_1",
+                "variant": 49,
+                "pos": [
+                    27,
+                    -2
+                ]
+            },
+            "25;-2": {
+                "type": "midground_1",
+                "variant": 82,
+                "pos": [
+                    25,
+                    -2
+                ]
+            },
+            "24;-3": {
+                "type": "midground_1",
+                "variant": 78,
+                "pos": [
+                    24,
+                    -3
+                ]
+            },
+            "24;-4": {
+                "type": "midground_1",
+                "variant": 40,
+                "pos": [
+                    24,
+                    -4
+                ]
+            },
+            "25;-4": {
+                "type": "midground_1",
+                "variant": 50,
+                "pos": [
+                    25,
+                    -4
+                ]
+            },
+            "24;-5": {
+                "type": "midground_1",
+                "variant": 4,
+                "pos": [
+                    24,
+                    -5
+                ]
+            },
+            "25;-5": {
+                "type": "midground_1",
+                "variant": 23,
+                "pos": [
+                    25,
+                    -5
+                ]
+            },
+            "26;-4": {
+                "type": "midground_1",
+                "variant": 63,
+                "pos": [
+                    26,
+                    -4
+                ]
+            },
+            "26;-5": {
+                "type": "midground_1",
+                "variant": 28,
+                "pos": [
+                    26,
+                    -5
+                ]
+            },
+            "27;-3": {
+                "type": "midground_1",
+                "variant": 16,
+                "pos": [
+                    27,
+                    -3
+                ]
+            },
+            "28;-3": {
+                "type": "midground_1",
+                "variant": 19,
+                "pos": [
+                    28,
+                    -3
+                ]
+            },
+            "29;-3": {
+                "type": "midground_1",
+                "variant": 35,
+                "pos": [
+                    29,
+                    -3
+                ]
+            },
+            "28;-2": {
+                "type": "midground_1",
+                "variant": 51,
+                "pos": [
+                    28,
+                    -2
+                ]
+            },
+            "28;-1": {
+                "type": "midground_1",
+                "variant": 58,
+                "pos": [
+                    28,
+                    -1
+                ]
+            },
+            "28;0": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    28,
+                    0
+                ]
+            },
+            "29;0": {
+                "type": "midground_1",
+                "variant": 49,
+                "pos": [
+                    29,
+                    0
+                ]
+            },
+            "29;-1": {
+                "type": "midground_1",
+                "variant": 49,
+                "pos": [
+                    29,
+                    -1
+                ]
+            },
+            "29;-2": {
+                "type": "midground_1",
+                "variant": 52,
+                "pos": [
+                    29,
+                    -2
+                ]
+            },
+            "30;-1": {
+                "type": "midground_1",
+                "variant": 66,
+                "pos": [
+                    30,
+                    -1
+                ]
+            },
+            "30;0": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    30,
+                    0
+                ]
+            },
+            "30;-2": {
+                "type": "midground_1",
+                "variant": 29,
+                "pos": [
+                    30,
+                    -2
                 ]
             }
         },
@@ -3886,16 +4350,16 @@
                 ]
             },
             "15;4": {
-                "type": "grass_1",
-                "variant": 5,
+                "type": "midground_1",
+                "variant": 59,
                 "pos": [
                     15,
                     4
                 ]
             },
             "15;3": {
-                "type": "grass_1",
-                "variant": 2,
+                "type": "midground_1",
+                "variant": 59,
                 "pos": [
                     15,
                     3
@@ -3903,7 +4367,7 @@
             },
             "14;3": {
                 "type": "grass_1",
-                "variant": 4,
+                "variant": 5,
                 "pos": [
                     14,
                     3
@@ -4063,7 +4527,7 @@
             },
             "9;3": {
                 "type": "grass_1",
-                "variant": 11,
+                "variant": 4,
                 "pos": [
                     9,
                     3
@@ -4239,7 +4703,7 @@
             },
             "8;7": {
                 "type": "grass_1",
-                "variant": 11,
+                "variant": 4,
                 "pos": [
                     8,
                     7
@@ -4271,7 +4735,7 @@
             },
             "9;7": {
                 "type": "grass_1",
-                "variant": 9,
+                "variant": 4,
                 "pos": [
                     9,
                     7
@@ -4415,7 +4879,7 @@
             },
             "14;5": {
                 "type": "grass_1",
-                "variant": 4,
+                "variant": 11,
                 "pos": [
                     14,
                     5
@@ -4423,7 +4887,7 @@
             },
             "14;4": {
                 "type": "grass_1",
-                "variant": 4,
+                "variant": 5,
                 "pos": [
                     14,
                     4
@@ -4439,7 +4903,7 @@
             },
             "31;4": {
                 "type": "grass_1",
-                "variant": 4,
+                "variant": 11,
                 "pos": [
                     31,
                     4
@@ -4839,7 +5303,7 @@
             },
             "38;0": {
                 "type": "grass_1",
-                "variant": 10,
+                "variant": 4,
                 "pos": [
                     38,
                     0
@@ -5051,6 +5515,758 @@
                 "pos": [
                     40,
                     -1
+                ]
+            },
+            "13;1": {
+                "type": "midground_1",
+                "variant": 0,
+                "pos": [
+                    13,
+                    1
+                ]
+            },
+            "14;1": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    14,
+                    1
+                ]
+            },
+            "15;1": {
+                "type": "midground_1",
+                "variant": 49,
+                "pos": [
+                    15,
+                    1
+                ]
+            },
+            "15;2": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    15,
+                    2
+                ]
+            },
+            "16;1": {
+                "type": "midground_1",
+                "variant": 51,
+                "pos": [
+                    16,
+                    1
+                ]
+            },
+            "16;2": {
+                "type": "midground_1",
+                "variant": 56,
+                "pos": [
+                    16,
+                    2
+                ]
+            },
+            "16;3": {
+                "type": "midground_1",
+                "variant": 49,
+                "pos": [
+                    16,
+                    3
+                ]
+            },
+            "16;4": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    16,
+                    4
+                ]
+            },
+            "17;4": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    17,
+                    4
+                ]
+            },
+            "17;3": {
+                "type": "midground_1",
+                "variant": 52,
+                "pos": [
+                    17,
+                    3
+                ]
+            },
+            "17;2": {
+                "type": "midground_1",
+                "variant": 58,
+                "pos": [
+                    17,
+                    2
+                ]
+            },
+            "18;2": {
+                "type": "midground_1",
+                "variant": 53,
+                "pos": [
+                    18,
+                    2
+                ]
+            },
+            "18;3": {
+                "type": "midground_1",
+                "variant": 51,
+                "pos": [
+                    18,
+                    3
+                ]
+            },
+            "18;4": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    18,
+                    4
+                ]
+            },
+            "18;1": {
+                "type": "midground_1",
+                "variant": 58,
+                "pos": [
+                    18,
+                    1
+                ]
+            },
+            "17;1": {
+                "type": "midground_1",
+                "variant": 55,
+                "pos": [
+                    17,
+                    1
+                ]
+            },
+            "16;5": {
+                "type": "midground_1",
+                "variant": 81,
+                "pos": [
+                    16,
+                    5
+                ]
+            },
+            "17;5": {
+                "type": "midground_1",
+                "variant": 93,
+                "pos": [
+                    17,
+                    5
+                ]
+            },
+            "18;5": {
+                "type": "midground_1",
+                "variant": 48,
+                "pos": [
+                    18,
+                    5
+                ]
+            },
+            "18;6": {
+                "type": "midground_1",
+                "variant": 78,
+                "pos": [
+                    18,
+                    6
+                ]
+            },
+            "19;6": {
+                "type": "midground_1",
+                "variant": 94,
+                "pos": [
+                    19,
+                    6
+                ]
+            },
+            "19;5": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    19,
+                    5
+                ]
+            },
+            "19;4": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    19,
+                    4
+                ]
+            },
+            "19;3": {
+                "type": "midground_1",
+                "variant": 53,
+                "pos": [
+                    19,
+                    3
+                ]
+            },
+            "19;2": {
+                "type": "midground_1",
+                "variant": 57,
+                "pos": [
+                    19,
+                    2
+                ]
+            },
+            "19;1": {
+                "type": "midground_1",
+                "variant": 48,
+                "pos": [
+                    19,
+                    1
+                ]
+            },
+            "16;0": {
+                "type": "midground_1",
+                "variant": 53,
+                "pos": [
+                    16,
+                    0
+                ]
+            },
+            "15;0": {
+                "type": "midground_1",
+                "variant": 18,
+                "pos": [
+                    15,
+                    0
+                ]
+            },
+            "14;0": {
+                "type": "midground_1",
+                "variant": 7,
+                "pos": [
+                    14,
+                    0
+                ]
+            },
+            "16;-1": {
+                "type": "midground_1",
+                "variant": 37,
+                "pos": [
+                    16,
+                    -1
+                ]
+            },
+            "17;-1": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    17,
+                    -1
+                ]
+            },
+            "17;0": {
+                "type": "midground_1",
+                "variant": 56,
+                "pos": [
+                    17,
+                    0
+                ]
+            },
+            "18;0": {
+                "type": "midground_1",
+                "variant": 50,
+                "pos": [
+                    18,
+                    0
+                ]
+            },
+            "18;-1": {
+                "type": "midground_1",
+                "variant": 51,
+                "pos": [
+                    18,
+                    -1
+                ]
+            },
+            "18;-2": {
+                "type": "midground_1",
+                "variant": 54,
+                "pos": [
+                    18,
+                    -2
+                ]
+            },
+            "18;-3": {
+                "type": "midground_1",
+                "variant": 54,
+                "pos": [
+                    18,
+                    -3
+                ]
+            },
+            "17;-2": {
+                "type": "midground_1",
+                "variant": 48,
+                "pos": [
+                    17,
+                    -2
+                ]
+            },
+            "16;-2": {
+                "type": "midground_1",
+                "variant": 0,
+                "pos": [
+                    16,
+                    -2
+                ]
+            },
+            "17;-3": {
+                "type": "midground_1",
+                "variant": 7,
+                "pos": [
+                    17,
+                    -3
+                ]
+            },
+            "19;-3": {
+                "type": "midground_1",
+                "variant": 49,
+                "pos": [
+                    19,
+                    -3
+                ]
+            },
+            "20;-3": {
+                "type": "midground_1",
+                "variant": 48,
+                "pos": [
+                    20,
+                    -3
+                ]
+            },
+            "20;-2": {
+                "type": "midground_1",
+                "variant": 70,
+                "pos": [
+                    20,
+                    -2
+                ]
+            },
+            "19;-2": {
+                "type": "midground_1",
+                "variant": 48,
+                "pos": [
+                    19,
+                    -2
+                ]
+            },
+            "19;0": {
+                "type": "midground_1",
+                "variant": 58,
+                "pos": [
+                    19,
+                    0
+                ]
+            },
+            "19;-1": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    19,
+                    -1
+                ]
+            },
+            "20;2": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    20,
+                    2
+                ]
+            },
+            "21;2": {
+                "type": "midground_1",
+                "variant": 50,
+                "pos": [
+                    21,
+                    2
+                ]
+            },
+            "20;1": {
+                "type": "midground_1",
+                "variant": 52,
+                "pos": [
+                    20,
+                    1
+                ]
+            },
+            "22;1": {
+                "type": "midground_1",
+                "variant": 53,
+                "pos": [
+                    22,
+                    1
+                ]
+            },
+            "23;1": {
+                "type": "midground_1",
+                "variant": 55,
+                "pos": [
+                    23,
+                    1
+                ]
+            },
+            "23;0": {
+                "type": "midground_1",
+                "variant": 52,
+                "pos": [
+                    23,
+                    0
+                ]
+            },
+            "24;0": {
+                "type": "midground_1",
+                "variant": 32,
+                "pos": [
+                    24,
+                    0
+                ]
+            },
+            "23;2": {
+                "type": "midground_1",
+                "variant": 48,
+                "pos": [
+                    23,
+                    2
+                ]
+            },
+            "22;2": {
+                "type": "midground_1",
+                "variant": 48,
+                "pos": [
+                    22,
+                    2
+                ]
+            },
+            "20;3": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    20,
+                    3
+                ]
+            },
+            "21;1": {
+                "type": "midground_1",
+                "variant": 57,
+                "pos": [
+                    21,
+                    1
+                ]
+            },
+            "21;3": {
+                "type": "midground_1",
+                "variant": 51,
+                "pos": [
+                    21,
+                    3
+                ]
+            },
+            "20;4": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    20,
+                    4
+                ]
+            },
+            "20;5": {
+                "type": "midground_1",
+                "variant": 58,
+                "pos": [
+                    20,
+                    5
+                ]
+            },
+            "21;5": {
+                "type": "midground_1",
+                "variant": 56,
+                "pos": [
+                    21,
+                    5
+                ]
+            },
+            "21;4": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    21,
+                    4
+                ]
+            },
+            "22;3": {
+                "type": "midground_1",
+                "variant": 59,
+                "pos": [
+                    22,
+                    3
+                ]
+            },
+            "22;4": {
+                "type": "midground_1",
+                "variant": 57,
+                "pos": [
+                    22,
+                    4
+                ]
+            },
+            "22;5": {
+                "type": "midground_1",
+                "variant": 56,
+                "pos": [
+                    22,
+                    5
+                ]
+            },
+            "23;3": {
+                "type": "midground_1",
+                "variant": 53,
+                "pos": [
+                    23,
+                    3
+                ]
+            },
+            "23;4": {
+                "type": "midground_1",
+                "variant": 49,
+                "pos": [
+                    23,
+                    4
+                ]
+            },
+            "23;5": {
+                "type": "midground_1",
+                "variant": 87,
+                "pos": [
+                    23,
+                    5
+                ]
+            },
+            "24;4": {
+                "type": "midground_1",
+                "variant": 52,
+                "pos": [
+                    24,
+                    4
+                ]
+            },
+            "24;3": {
+                "type": "midground_1",
+                "variant": 48,
+                "pos": [
+                    24,
+                    3
+                ]
+            },
+            "24;2": {
+                "type": "midground_1",
+                "variant": 53,
+                "pos": [
+                    24,
+                    2
+                ]
+            },
+            "24;1": {
+                "type": "midground_1",
+                "variant": 52,
+                "pos": [
+                    24,
+                    1
+                ]
+            },
+            "25;4": {
+                "type": "midground_1",
+                "variant": 51,
+                "pos": [
+                    25,
+                    4
+                ]
+            },
+            "25;3": {
+                "type": "midground_1",
+                "variant": 52,
+                "pos": [
+                    25,
+                    3
+                ]
+            },
+            "25;2": {
+                "type": "midground_1",
+                "variant": 57,
+                "pos": [
+                    25,
+                    2
+                ]
+            },
+            "25;1": {
+                "type": "midground_1",
+                "variant": 30,
+                "pos": [
+                    25,
+                    1
+                ]
+            },
+            "26;2": {
+                "type": "midground_1",
+                "variant": 34,
+                "pos": [
+                    26,
+                    2
+                ]
+            },
+            "26;3": {
+                "type": "midground_1",
+                "variant": 60,
+                "pos": [
+                    26,
+                    3
+                ]
+            },
+            "26;4": {
+                "type": "midground_1",
+                "variant": 103,
+                "pos": [
+                    26,
+                    4
+                ]
+            },
+            "25;5": {
+                "type": "midground_1",
+                "variant": 96,
+                "pos": [
+                    25,
+                    5
+                ]
+            },
+            "24;5": {
+                "type": "midground_1",
+                "variant": 91,
+                "pos": [
+                    24,
+                    5
+                ]
+            },
+            "22;6": {
+                "type": "midground_1",
+                "variant": 97,
+                "pos": [
+                    22,
+                    6
+                ]
+            },
+            "21;6": {
+                "type": "midground_1",
+                "variant": 95,
+                "pos": [
+                    21,
+                    6
+                ]
+            },
+            "20;6": {
+                "type": "midground_1",
+                "variant": 92,
+                "pos": [
+                    20,
+                    6
+                ]
+            },
+            "21;0": {
+                "type": "midground_1",
+                "variant": 16,
+                "pos": [
+                    21,
+                    0
+                ]
+            },
+            "22;0": {
+                "type": "midground_1",
+                "variant": 50,
+                "pos": [
+                    22,
+                    0
+                ]
+            },
+            "23;-1": {
+                "type": "midground_1",
+                "variant": 34,
+                "pos": [
+                    23,
+                    -1
+                ]
+            },
+            "22;-1": {
+                "type": "midground_1",
+                "variant": 8,
+                "pos": [
+                    22,
+                    -1
+                ]
+            },
+            "20;0": {
+                "type": "midground_1",
+                "variant": 53,
+                "pos": [
+                    20,
+                    0
+                ]
+            },
+            "20;-1": {
+                "type": "midground_1",
+                "variant": 67,
+                "pos": [
+                    20,
+                    -1
+                ]
+            },
+            "21;-3": {
+                "type": "midground_1",
+                "variant": 100,
+                "pos": [
+                    21,
+                    -3
+                ]
+            },
+            "20;-4": {
+                "type": "midground_1",
+                "variant": 18,
+                "pos": [
+                    20,
+                    -4
+                ]
+            },
+            "19;-4": {
+                "type": "midground_1",
+                "variant": 16,
+                "pos": [
+                    19,
+                    -4
+                ]
+            },
+            "18;-4": {
+                "type": "midground_1",
+                "variant": 5,
+                "pos": [
+                    18,
+                    -4
+                ]
+            },
+            "21;-4": {
+                "type": "midground_1",
+                "variant": 28,
+                "pos": [
+                    21,
+                    -4
                 ]
             }
         }

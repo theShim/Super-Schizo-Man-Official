@@ -3,7 +3,11 @@ with contextlib.redirect_stdout(None):
     import pygame
     from pygame.locals import *
 
+import random
+import math
+
 from scripts.config.SETTINGS import WIDTH, HEIGHT
+from scripts.utils.CORE_FUNCS import vec
 
     ############################################################################################## 
 
@@ -31,3 +35,80 @@ class Editor_Background:
             if p1[1] < -self.line_width:
                 p1[1] = HEIGHT - (-5*self.line_width)
                 p2[1] = HEIGHT - self.line_width * 4 - (-5*self.line_width)
+
+
+class Editor_Background2:
+    def __init__(self, game):
+        self.game = game
+        self.screen = self.game.screen
+
+        self.line_number = 40
+        self.lines = [{
+            "start" : vec(random.uniform(-WIDTH/2, WIDTH), random.uniform(0, HEIGHT * 1.5)),
+            "end" : vec(),
+            "colour" : random.choices([(22, 22, 22), (55, 55, 55)], [2, 1])[0],
+            "z" : random.uniform(1.5, 7),
+        } for i in range(self.line_number)]
+
+        self.scale = [1.25, -3.5]
+        for i in range(len(self.lines)):
+            start = self.lines[i]["start"]
+            scale_scalar = 100 / self.lines[i]["z"]
+            self.lines[i]["end"] = (end := start + vec(self.scale) * scale_scalar)
+            self.lines[i]["height"] = abs(start.y - end.y)
+            self.lines[i]["speed"] = scale_scalar / 100
+            self.lines[i]["width"] = max(14, scale_scalar / 2)
+
+
+        self.particles = []
+        for i in range(30):
+            angle = math.radians(random.uniform(0, 360))
+            radius = random.uniform(2, 4)
+            pos = vec(random.uniform(0, WIDTH), random.uniform(0, HEIGHT))
+            col = random.choice([(78, 78, 78), (69, 69, 69), (81, 81, 81)])
+            vel = vec(random.uniform(4, 6), random.uniform(-2, 0))
+            self.particles.append({"angle" : angle, "radius" : radius, "pos" : pos, "col" : col, "vel" : vel, "rot_direction":random.choice([-1, 1])})
+
+    def draw_line(self, start, end, line_width = 10, colour = None):
+        colour = colour or random.choice([(22, 22, 22), (55, 55, 55)])
+        points = [
+            vec(start[0] - line_width / 2, start[1]),
+            vec(start[0] + line_width / 2, start[1]),
+            vec(end[0] + line_width / 2, end[1]),
+            vec(end[0] - line_width / 2, end[1]),
+        ]
+        pygame.draw.polygon(self.screen, colour, points)
+
+    def draw_particle(self, info):
+        points = [
+            info["pos"] + vec(math.cos(info["angle"]), math.sin(info["angle"])) * info["radius"],
+            info["pos"] + vec(math.cos(info["angle"] + math.pi / 2), math.sin(info["angle"] + math.pi / 2)) * info["radius"],
+            info["pos"] + vec(math.cos(info["angle"] + math.pi), math.sin(info["angle"] + math.pi)) * info["radius"],
+            info["pos"] + vec(math.cos(info["angle"] + (3 * math.pi) / 2), math.sin(info["angle"] + (3 * math.pi) / 2)) * info["radius"],
+        ]
+        pygame.draw.polygon(self.screen, info["col"], points)
+
+    def update(self):
+        self.screen.fill((30, 30, 30))
+
+        for line in sorted(self.lines, key=lambda l: l["z"], reverse=True):
+            self.draw_line(line["start"], line["end"], line_width=line["width"], colour=line["colour"])
+            line["start"] += vec(self.scale) * line["speed"] * (self.game.dt * 80)
+            line["end"] += vec(self.scale) * line["speed"] * (self.game.dt * 80)
+
+            if line["start"].y < 0:
+                line["start"].y = HEIGHT + line["height"]
+                line["end"].y = HEIGHT
+                line["start"].x = (x := random.uniform(-WIDTH/2, WIDTH))
+                line["end"].x = x + self.scale[0] * (100 / line["z"])
+
+        for particle in self.particles:
+            self.draw_particle(particle)
+            particle["vel"].y -= random.uniform(-1, 1) / 10
+            particle["angle"] += (particle["vel"].magnitude() / 100) * particle["rot_direction"] * (self.game.dt * 80)
+            particle["pos"] += (particle["vel"] / 2) * (self.game.dt * 80)
+
+            if particle["pos"].y < 0 or particle["pos"].x > WIDTH:
+                particle["pos"].x = 0
+                particle["pos"].y = random.uniform(0, HEIGHT)
+                particle["vel"] = vec(random.uniform(4, 6), random.uniform(0, 0))

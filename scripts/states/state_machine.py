@@ -3,10 +3,11 @@ with contextlib.redirect_stdout(None):
     import pygame
     from pygame.locals import *
 
+from scripts.entities.player import Player
 from scripts.particles.particle_manager import Particle_Manager
 from scripts.world_loading.tilemap import Tilemap
 
-from scripts.config.SETTINGS import WIDTH, HEIGHT, FPS
+from scripts.config.SETTINGS import WIDTH, HEIGHT, FPS, Z_LAYERS
 
     ##############################################################################################
 
@@ -102,9 +103,15 @@ class State:
         self.particle_manager.update()
 
         self.game.calculate_offset() #camera
+        self.game.calculate_zoom()
         self.render()
 
     def render(self):
+        first_dark = True
+        self.dark = pygame.Surface((WIDTH, HEIGHT))
+        self.dark.fill((0, 0, 0))
+        self.dark.set_alpha(120)
+
         for spr in sorted(
                 (
                     self.game.all_sprites.sprites() + 
@@ -114,6 +121,12 @@ class State:
                 ), 
                 key=lambda s: s.z
             ):
+
+            if spr.z == Z_LAYERS["foreground particle"]:
+                if first_dark:
+                    first_dark = False
+                    # self.screen.blit(self.dark, (0, 0))
+
             spr.update()
 
 class Cutscene(State):

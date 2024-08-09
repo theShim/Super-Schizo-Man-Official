@@ -10,7 +10,8 @@ import random
 import sys
 from typing import Literal
 
-from scripts.world_loading.backgrounds import Editor_Background
+from scripts.nature.nature_tiles.grass import Grass_Manager
+from scripts.world_loading.backgrounds import Editor_Background, Editor_Background2
 from scripts.world_loading.tilemap import Tilemap
 from scripts.world_loading.tiles import Tile, Offgrid_Tile
 
@@ -91,12 +92,12 @@ class Editor:
 
         self.offset = vec(-5, 7)
         self.scroll_speed = 5
-        self.background = Editor_Background(self)
+        self.background = Editor_Background2(self)
         self.font = pygame.font.SysFont('Verdana', 10)
         self.particles = pygame.sprite.Group()
 
-        self.tilemap = Tilemap(self, editor_flag=True)
         self.cache_sprites()
+        self.tilemap = Tilemap(self, editor_flag=True)
         check_loaded_sprite_number()
         self.on_grid = True
 
@@ -134,7 +135,7 @@ class Editor:
     def initialise(self):
         pygame.init()  #general pygame
         pygame.font.init() #font stuff
-        pygame.display.set_caption("Platformer - Level Editor") #Window Title
+        pygame.display.set_caption("Super Schizo Man") #Window Title
 
         pygame.mixer.pre_init(44100, 16, 2, 4096) #music stuff
         pygame.mixer.init()
@@ -145,6 +146,7 @@ class Editor:
     def cache_sprites(self):
         Tile.cache_sprites()
         Offgrid_Tile.cache_sprites()
+        Grass_Manager.cache_sprites()
 
         ##################################################################################
 
@@ -240,16 +242,20 @@ class Editor:
                     asset.set_alpha(alpha)
                     shadow.set_alpha(alpha)
                     
-                self.sidebar.blit(shadow, (x+2, y+2 + self.sidebar_yscroll))
+                if len(mask.outline()) > 2:
+                    self.sidebar.blit(shadow, (x+2, y+2 + self.sidebar_yscroll))
                 
                 if pygame.Rect([x + WIDTH*0.75, y + self.sidebar_yscroll, *asset.get_size()]).collidepoint(mousePos):
                     self.sidebar.blit(asset, (x, y-2 + self.sidebar_yscroll))
-                    pygame.draw.polygon(
-                        self.sidebar, 
-                        (220, 220, 220, 192), 
-                        [vec(p) + vec(x, y-2 + self.sidebar_yscroll) for p in mask.outline()], 
-                        2
-                    )
+                    try:
+                        pygame.draw.polygon(
+                            self.sidebar, 
+                            (220, 220, 220, 192), 
+                            [vec(p) + vec(x, y-2 + self.sidebar_yscroll) for p in mask.outline()], 
+                            2
+                        )
+                    except ValueError:
+                        pass
 
                     if mouse[0]:
                         self.current_tilevariant = i
