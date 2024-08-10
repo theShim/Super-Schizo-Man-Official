@@ -1,122 +1,106 @@
-import os
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
-import contextlib
-with contextlib.redirect_stdout(None):
-    import pygame
-    from pygame.locals import *
-    
 import random
-import sys
-import math
-import time
-import numpy as np
+import pygame
 
-    ##############################################################################################
+from pygame.locals import *
 
-#initialising pygame stuff
-pygame.init()  #general pygame
-pygame.font.init() #font stuff
-pygame.mixer.pre_init(44100, 16, 2, 4096) #music stuff
-pygame.mixer.init()
-pygame.event.set_blocked(None) #setting allowed events to reduce lag
-pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, pygame.KEYUP])
-pygame.display.set_caption("")
 
-#initalising pygame window
-flags = pygame.DOUBLEBUF | pygame.SCALED#| pygame.FULLSCREEN
-SIZE = WIDTH, HEIGHT = (600, 600)
-screen = pygame.display.set_mode(SIZE, flags)
+pygame.init()
+
+
+SCREEN_WIDTH = 640
+SCREEN_HEIGHT = 480
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
 clock = pygame.time.Clock()
 
-#renaming common functions
-vec = pygame.math.Vector2
+BG_COLOR = 0, 0, 0
+PLAYER_COLOR = 255, 255, 255
 
-#useful functions
-def gen_colour():
-    return (random.randint(100, 255), random.randint(100, 255), random.randint(100, 255))
 
-def euclidean_distance(point1, point2):
-    return vec(point1).distance_to(vec(point2))
+class Player(pygame.sprite.Sprite):
+    WALK_SPEED = 3
+    RUN_SPEED = 6
+    JUMP_SPEED = 15
+    GRAVITY = 0.5
 
-def rotate(origin, point, angle):
-    ox, oy = origin
-    px, py = point
-    angle = math.radians(angle)
+    def __init__(self):
+        self.surf = pygame.Surface((32, 32))
+        self.surf.fill(PLAYER_COLOR)
+        self.new_pos()
+        self.vx = 0
+        self.vy = 0
 
-    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
-    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
-    return vec(qx, qy)
-
-    ##############################################################################################
-
-class Grid(pygame.sprite.Sprite):
-    def __init__(self, n=1):
-        self.grid = np.random.randint(0, 2, (HEIGHT, WIDTH))
-        self.flag = True
-        self.offsets = [(i, j) for i in range(-1, 2) for j in range(-1, 2) if not (i == j == 0)]
-        self.scalar = n
-
-    def mouse(self):
-        mouse = pygame.mouse.get_pressed()
-        if mouse[0]:
-            self.flag = False
-            mousePos = pygame.mouse.get_pos()
-            self.grid[mousePos[0], mousePos[1]] = 1
-        else:
-            self.flag = True
-
-    def update(self):
-        self.mouse()
-        for i in range(self.scalar):
-            self.draw()
+    def new_pos(self):
+        self.rect = self.surf.get_rect(
+            left=random.randrange(SCREEN_WIDTH),
+            top=random.randrange(SCREEN_HEIGHT // 3),
+        )
 
     def draw(self):
-        # Create a padded grid to handle edge cases
-        padded_grid = np.pad(self.grid, pad_width=1, mode='constant', constant_values=0)
-        
-        # Calculate neighbours
-        neighbours = (
-            padded_grid[ :-2,  :-2] + padded_grid[ :-2, 1:-1] + padded_grid[ :-2, 2:  ] +
-            padded_grid[1:-1,  :-2] +                         padded_grid[1:-1, 2:  ] +
-            padded_grid[2:  ,  :-2] + padded_grid[2:  , 1:-1] + padded_grid[2:  , 2:  ]
-        )
-        
-        if self.flag:
-            self.grid = np.where((self.grid == 1) & ((neighbours == 2) | (neighbours == 3)), 1, 0) | (self.grid == 0) & ((neighbours == 3) | (neighbours == 6))
+        screen.blit(self.surf, self.rect)
 
-        # Update the display
-        pixel_array = np.stack((self.grid, self.grid, self.grid), axis=-1) * 255
-        pygame.surfarray.blit_array(screen, pixel_array)
+    def move(self):
+        self.rect.move_ip(self.vx, self.vy)
 
-g = Grid()
+    def on_ground(self):
+        return self.rect.bottom == SCREEN_HEIGHT - 1
+
+    def keep_on_screen(self):
+        if self.rect.left < 0:
+            self.rect.left = 0
+            self.vx = 0
+        if self.rect.right >= SCREEN_WIDTH:
+            self.rect.right = SCREEN_WIDTH - 1
+            self.vx = 0
+        if self.rect.top < 0:
+            self.rect.top = 0
+            self.vy = 0
+        if self.rect.bottom >= SCREEN_HEIGHT:
+            self.rect.bottom = SCREEN_HEIGHT - 1
+            self.vy = 0
+
+    def update(self, pressed_keys):
+        if pressed_keys[K_LEFT] and not pressed_keys[K_RIGHT]:
+            self.vx = -self.RUN_SPEED if pressed_keys[K_SPACE] else -self.WALK_SPEED
+        elif pressed_keys[K_RIGHT] and not pressed_keys[K_LEFT]:
+            self.vx = self.RUN_SPEED if pressed_keys[K_SPACE] else self.WALK_SPEED
+        else:
+            self.vx = 0
+        self.vy += self.GRAVITY
+        if pressed_keys[K_UP] and self.on_ground():
+            self.vy = -self.JUMP_SPEED
+        self.move()
+        self.keep_on_screen()
 
 
-    ##############################################################################################
+def loop():
+    player = Player()
 
-last_time = time.time()
+    while True:
+        # get events
+        for e in pygame.event.get():
+            if e.type == QUIT:
+                return 
+            elif e.type == KEYDOWN:
+                if e.key == K_ESCAPE or e.key == K_q:
+                    return
+                elif e.key == K_r:
+                    player.new_pos()
 
-running = True
-while running:
+        pressed_keys = pygame.key.get_pressed()
 
-    dt = time.time() - last_time
-    last_time = time.time()
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_q:
-                running = False
+        # update
+        player.update(pressed_keys)
 
-    screen.fill((30, 30, 30))
-    g.update()
+        # draw
+        screen.fill(BG_COLOR)
+        player.draw()
+        pygame.display.flip()
 
-    #fps
-    pygame.display.set_caption(f'FPS: {int(clock.get_fps())}')
+        # tick
+        clock.tick(60)
 
-    pygame.display.update()
-    clock.tick(60)
+
+loop()
 
 pygame.quit()
-sys.exit()

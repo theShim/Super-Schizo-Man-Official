@@ -9,6 +9,7 @@ with contextlib.redirect_stdout(None):
     from pygame.locals import *
     
 import sys
+import random
 
 from scripts.entities.player import Player
 from scripts.entities.bord import Bord
@@ -51,7 +52,7 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.entities = pygame.sprite.Group()
         self.player = Player(self, [self.all_sprites, self.entities], char_num=2)
-        [Bord(self, [self.all_sprites, self.entities], (WIDTH/2 + (i * 10), -HEIGHT/2 + 250)) for i in range(3)]
+        [Bord(self, [self.all_sprites, self.entities], (WIDTH/2 + (i * 10), -HEIGHT/2 + 250)) for i in range(5)]
 
         self.state_loader = State_Loader(self, start="debug")
         self.state_loader.populate_states()
@@ -132,6 +133,14 @@ class Game:
 
             self.handle_events()
             self.screen.fill((14, 19, 32))
+
+            if random.randint(1, 2) == 1:
+                self.state_loader.current_state.particle_manager.add_particle(
+                    "bord particle", 
+                    pos=vec(WIDTH / 2, -HEIGHT/4) + vec(random.uniform(-5, 5), random.uniform(-5, 5)),
+                    vel=vec(random.uniform(-2, 2), random.uniform(4, 8)),
+                    col=random.choice([(17+200, 158+80, 214+40), (71+180, 170+80, 209+40)])
+                )
 
             self.state_loader.update()
             if self.zoom != 1:

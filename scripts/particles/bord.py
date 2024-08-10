@@ -37,35 +37,61 @@ class Bord_After_Image(pygame.sprite.Sprite):
 
 
 class Bord_Particle(pygame.sprite.Sprite):
-    def __init__(self, game, groups, pos, col=(255, 0, 0)):
+    def __init__(self, game, groups, pos, vel, col=(255, 0, 0)):
         super().__init__(groups)
         self.game = game
         self.screen = self.game.screen
         self.z = Z_LAYERS["background particle"]
 
-        self.pos = vec(pos)
-        self.angle = math.radians(random.uniform(0, 360))
-        self.angle_mod = math.radians(random.uniform(2, 30))
-        self.rot_direction = random.choice([-1, 1])
-        self.radius = random.uniform(3, 3.2)
-        self.decay = random.uniform(0.2, 0.8) / 4
+        self.pos = vec(pos) - vel
+        self.tail = self.pos - vel * (random.randint(10, 15) / 20)
+        self.t = 0
+        self.decay = random.uniform(0.0125, 0.015) / 5
+        self.vel: vec = vel / 2
         self.col = col
+        self.rot_direction = random.choice([-1, 1]) * 4
+        self.alpha = 255
 
     def update(self):
-        self.radius -= self.decay
-        if self.radius <= 0:
+        if self.pos.y - self.game.offset.y < -50:
             return self.kill()
-        self.angle += self.angle_mod * self.rot_direction * (self.game.dt * 80)
         
+        self.t += self.decay
+        if self.t >= 0.5:
+            return self.kill()
+        
+        self.alpha -= random.randint(1, 3)
+        if self.alpha <= 0:
+            return self.kill()
+        
+        self.pos += self.vel
+        self.vel.rotate_ip(self.t * self.rot_direction * self.vel.magnitude())
+        self.tail = self.tail.lerp(self.pos, min(1, self.t))
         self.draw()
 
     def draw(self):
-        surf = pygame.Surface((self.radius*3, self.radius*3), pygame.SRCALPHA)
-        points = [
-            vec(surf.get_size())/2 + vec(math.cos(self.angle), math.sin(self.angle)) * self.radius,
-            vec(surf.get_size())/2 + vec(math.cos(self.angle + math.pi / 2), math.sin(self.angle + math.pi / 2)) * self.radius,
-            vec(surf.get_size())/2 + vec(math.cos(self.angle + math.pi), math.sin(self.angle + math.pi)) * self.radius,
-            vec(surf.get_size())/2 + vec(math.cos(self.angle + (3 * math.pi) / 2), math.sin(self.angle + (3 * math.pi) / 2)) * self.radius,
-        ]
-        pygame.draw.polygon(surf, self.col + (128,), points)
-        self.screen.blit(surf, surf.get_rect(center=self.pos-self.game.offset))
+        pygame.draw.line(self.screen, self.col, self.pos - self.game.offset, self.tail - self.game.offset, 2)
+
+    def draw(self):
+        # Calculate the bounding box for the line
+        min_x = min(self.pos[0], self.tail[0])
+        min_y = min(self.pos[1], self.tail[1])
+        max_x = max(self.pos[0], self.tail[0])
+        max_y = max(self.pos[1], self.tail[1])
+        
+        width = max_x - min_x
+        height = max_y - min_y
+        
+        # Create a smaller surface to fit the line
+        temp_surface = pygame.Surface((width + 1, height + 1), pygame.SRCALPHA)
+        
+        # Adjusted start and end positions relative to the temp_surface
+        start_pos = (self.pos[0] - min_x, self.pos[1] - min_y)
+        end_pos = (self.tail[0] - min_x, self.tail[1] - min_y)
+        
+        # Draw the line on the smaller surface
+        line_color = self.col + (self.alpha,)
+        pygame.draw.line(temp_surface, line_color, start_pos, end_pos, 2)
+        
+        # Blit the smaller surface onto the main screen
+        self.screen.blit(temp_surface, (min_x - self.game.offset[0], min_y - self.game.offset[1]))

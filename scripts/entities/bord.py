@@ -32,7 +32,7 @@ class Bord(pygame.sprite.Sprite):
                     imgs.append(img)
 
                 add_loaded_sprite_number(len(imgs))
-                animator = SpriteAnimator(imgs, animation_speed=0.2)
+                animator = SpriteAnimator(imgs, animation_speed=0.05)
                 cls.SPRITES[int(char_num)][anim.lower()] = animator
 
     def __init__(self, game, groups, pos, char_num = 1):
@@ -41,7 +41,7 @@ class Bord(pygame.sprite.Sprite):
         self.screen = self.game.screen
         self.z = Z_LAYERS["entities"]
 
-        self.sprites: dict = Bord.SPRITES[char_num]
+        self.sprites: dict = Bord.SPRITES[char_num].copy()
         self.status = "idle"
 
         image: pygame.Surface = self.sprites[self.status].get_sprite() #current sprite
@@ -54,6 +54,8 @@ class Bord(pygame.sprite.Sprite):
         self.vel = vec() #x and y velocity
         self.acc = vec(0, GRAV)
         self.touched = False
+        self.touch_x = 12
+        self.midtouch_flag = None
         self.move_timer = Timer(FPS * (random.randint(4, 8) / 2), 1)
         self.landed = False
 
@@ -96,16 +98,28 @@ class Bord(pygame.sprite.Sprite):
                     self.vel.x = random.uniform(1.2, 2.2) * (-1 if self.direction == "left" else 1)
                     self.vel.y = -random.uniform(1.2, 2.2)
         else:
-            self.acc.x = 150 * (-1 if self.direction == "left" else 1)
-            self.vel.x = .5 * (-1 if self.direction == "left" else 1)
-            self.acc.y = -4
+            self.change_status("flying")
 
-            if random.randint(1, 2) == 1:
+            if random.randint(1, 20) == 1:
                 self.game.state_loader.current_state.particle_manager.add_particle(
                     "bord particle", 
-                    pos=self.image.get_rect(midbottom=self.hitbox.midbottom).center + vec(random.uniform(-2, 2), random.uniform(-2, 2)),
-                    col=random.choice([(17, 158, 214), (71, 170, 209)])
+                    pos=self.image.get_rect(midbottom=self.hitbox.midbottom).center + vec(random.uniform(-5, 5), random.uniform(-5, 5)),
+                    vel=self.vel.clamp_magnitude(10),
+                    col=random.choice([(17+200, 158+80, 214+40), (71+180, 170+80, 209+40)])
                 )
+
+            #add code here
+            if self.direction == 'left':
+                self.acc.x = -random.uniform(1.0, 1.25) * 2
+            else:
+                self.acc.x = random.uniform(1.0, 1.25) * 2
+
+            self.acc.y = -random.uniform(1, 1.5) * 2  # Strong upward movement
+
+            # Add a wobble effect by slightly dipping the bird downwards at a random point in its flight
+            if random.randint(1, 20) == 1:  # Occurs randomly to simulate the wobble
+                self.vel.y += 4 * random.uniform(0.1, 0.2)  # Slight dip
+                self.vel.x *= 0.8
 
         if self.rect.bottom - self.game.offset.y < -50:
             return self.kill()
@@ -125,8 +139,8 @@ class Bord(pygame.sprite.Sprite):
 
         if self.landed and (not self.touched):
             self.vel.x *= FRIC #applying friction
-        if -0.5 < self.vel.x < 0.5: #bounds to prevent sliding bug
-            self.vel.x = 0
+            if -0.5 < self.vel.x < 0.5: #bounds to prevent sliding bug
+                self.vel.x = 0
 
         self.rect.topleft += self.vel# * self.game.dt #actually applying the velocity
 
@@ -184,12 +198,12 @@ class Bord(pygame.sprite.Sprite):
         self.move()
         self.collisions()
 
-        if self.touched:
-            self.game.state_loader.current_state.particle_manager.add_particle(
-                "bord after image", 
-                image=self.image, 
-                pos=self.image.get_rect(midbottom=self.hitbox.midbottom).topleft
-            )
+        # if self.touched:
+        #     self.game.state_loader.current_state.particle_manager.add_particle(
+        #         "bord after image", 
+        #         image=self.image, 
+        #         pos=self.image.get_rect(midbottom=self.hitbox.midbottom).topleft
+        #     )
 
         self.animate()
         self.draw()

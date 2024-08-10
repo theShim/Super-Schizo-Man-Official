@@ -28,21 +28,21 @@ class Player(pygame.sprite.Sprite):
             for anim in os.listdir(path):
                 imgs = []
                 for move_name in os.listdir(f"{path}/{anim}"):
-                    base = pygame.image.load(f"{path}/{anim}/{move_name}").convert_alpha()
-                    img = pygame.Surface(base.get_size())
+                    img = pygame.image.load(f"{path}/{anim}/{move_name}").convert_alpha()
+                    # img = pygame.Surface(base.get_size())
 
-                    #solid outline
-                    for y in range(img.height):
-                        for x in range(img.width):
-                            if base.get_at((x, y)) == (0, 0, 0, 0):
-                                for offset in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-                                    x1 = sorted([0, base.width-1, x + offset[0]])[1]
-                                    y1 = sorted([0, base.height-1, y + offset[1]])[1]
-                                    if base.get_at((x1, y1)) != (0, 0, 0, 0):
-                                        img.set_at((x, y), (1, 0, 0))
-                                        break
-                            else:
-                                img.set_at((x, y), base.get_at((x, y)))
+                    # #solid outline
+                    # for y in range(img.height):
+                    #     for x in range(img.width):
+                    #         if base.get_at((x, y)) == (0, 0, 0, 0):
+                    #             for offset in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+                    #                 x1 = sorted([0, base.width-1, x + offset[0]])[1]
+                    #                 y1 = sorted([0, base.height-1, y + offset[1]])[1]
+                    #                 if base.get_at((x1, y1)) != (0, 0, 0, 0):
+                    #                     img.set_at((x, y), (1, 0, 0))
+                    #                     break
+                    #         else:
+                    #             img.set_at((x, y), base.get_at((x, y)))
 
                     img = pygame.transform.scale(img, pygame.math.Vector2(img.get_size())*scales[int(char_num)])
 
@@ -130,7 +130,7 @@ class Player(pygame.sprite.Sprite):
         if keys[CONTROLS["jump"]] or keys[CONTROLS['up']]:
             if self.jumps > 0 and self.jumpHeld == False:
                 self.vel.y = -self.jump_vel
-                self.jumps -= 1
+                self.jumps -= 1 #lower the remaining jumps for double jump capability
                 self.jumpHeld = True
         else:
             if self.vel.y < 0:
@@ -246,8 +246,6 @@ class Player(pygame.sprite.Sprite):
             self.squish += self.squish_vel
 
             spr = pygame.transform.scale(spr, (spr.width + self.squish / 2, spr.height - self.squish))
-
-        self.game.debugger.add_text(f"{self.squish}")
         
         return spr
 
