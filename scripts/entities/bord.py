@@ -32,7 +32,7 @@ class Bord(pygame.sprite.Sprite):
                     imgs.append(img)
 
                 add_loaded_sprite_number(len(imgs))
-                animator = SpriteAnimator(imgs, animation_speed=0.05)
+                animator = SpriteAnimator(imgs, animation_speed=0.05  if anim.lower() != "eat" else 0.2, loop=False if anim.lower() == "eat" else True)
                 cls.SPRITES[int(char_num)][anim.lower()] = animator
 
     def __init__(self, game, groups, pos, char_num = 1):
@@ -58,6 +58,8 @@ class Bord(pygame.sprite.Sprite):
         self.midtouch_flag = None
         self.move_timer = Timer(FPS * (random.randint(4, 8) / 2), 1)
         self.landed = False
+
+        self.eat_timer = Timer(FPS * random.randint(3, 5), 1)
 
     #actual colliding rect
     @property
@@ -85,18 +87,19 @@ class Bord(pygame.sprite.Sprite):
             self.touched = True
 
         if not self.touched:
-            self.move_timer.update()
-            if self.move_timer.finished:
-                if self.landed:
-                    self.move_timer.reset()
-                    self.move_timer.change_speed(random.uniform(0.7, 2))
+            if self.status != "eat":
+                self.move_timer.update()
+                if self.move_timer.finished:
+                    if self.landed:
+                        self.move_timer.reset()
+                        self.move_timer.change_speed(random.uniform(0.7, 2))
 
-                    max_dist = 50
-                    if not self.game.state_loader.current_state.tilemap.enemy_tile_infront_to_walk(self.hitbox.center, self.direction, max_dist):
-                        self.direction = "left" if self.direction == "right" else "right"
+                        max_dist = 50
+                        if not self.game.state_loader.current_state.tilemap.enemy_tile_infront_to_walk(self.hitbox.center, self.direction, max_dist):
+                            self.direction = "left" if self.direction == "right" else "right"
 
-                    self.vel.x = random.uniform(1.2, 2.2) * (-1 if self.direction == "left" else 1)
-                    self.vel.y = -random.uniform(1.2, 2.2)
+                        self.vel.x = random.uniform(1.2, 2.2) * (-1 if self.direction == "left" else 1)
+                        self.vel.y = -random.uniform(1.2, 2.2)
         else:
             self.change_status("flying")
 
@@ -132,10 +135,11 @@ class Bord(pygame.sprite.Sprite):
         self.vel.y += self.acc.y * self.game.dt #vertical acceleration (gravity and jumping)
 
         #change the current animation depending on if the player is moving up or down
-        if self.vel.y > 0:
-            self.change_status('flying')
-        elif self.vel.y < 0:
-            self.change_status('flying')
+        if not self.touched and self.status != "eat":
+            if self.vel.y > 0:
+                self.change_status('flying')
+            elif self.vel.y < 0:
+                self.change_status('flying')
 
         if self.landed and (not self.touched):
             self.vel.x *= FRIC #applying friction
@@ -160,7 +164,8 @@ class Bord(pygame.sprite.Sprite):
                 if abs(self.hitbox.bottom - rect.top) < collision_tolerance and self.vel.y > 0:
                     self.vel.y = 0 #reset y velocity
                     self.rect.bottom = rect.top + 1
-                    self.change_status("idle")
+                    if self.status != "eat":
+                        self.change_status("idle")
                     self.landed = True
                     break
                 
@@ -185,18 +190,32 @@ class Bord(pygame.sprite.Sprite):
     #changing the animation
     def change_status(self, status):
         if status != self.status:
-            self.current_sprite.reset_frame()
+            # self.current_sprite.reset_frame()
             self.status = status
 
     #updating the current animation sprite
     def animate(self):
         self.current_sprite.next(self.game.dt)
+
+        if self.status == "eat":
+            if self.current_sprite.finished:
+                self.change_status("idle")
         
         ###################################################################################### 
 
     def update(self):
         self.move()
         self.collisions()
+
+        if self.landed and not self.touched:
+            self.eat_timer.update()
+            if self.eat_timer.finished:
+                self.change_status("eat")
+                self.current_sprite.reset_frame()
+                self.eat_timer.reset()
+
+        # if self.status != "eat":
+        #     self.change_status("eat")
 
         # if self.touched:
         #     self.game.state_loader.current_state.particle_manager.add_particle(

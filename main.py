@@ -132,15 +132,7 @@ class Game:
             last_time = current_time
 
             self.handle_events()
-            self.screen.fill((14, 19, 32))
-
-            if random.randint(1, 2) == 1:
-                self.state_loader.current_state.particle_manager.add_particle(
-                    "bord particle", 
-                    pos=vec(WIDTH / 2, -HEIGHT/4) + vec(random.uniform(-5, 5), random.uniform(-5, 5)),
-                    vel=vec(random.uniform(-2, 2), random.uniform(4, 8)),
-                    col=random.choice([(17+200, 158+80, 214+40), (71+180, 170+80, 209+40)])
-                )
+            self.screen.fill((14, 19, 32))  
 
             self.state_loader.update()
             if self.zoom != 1:

@@ -17,10 +17,13 @@ class SpriteAnimator:
     #restart the animation
     def reset_frame(self):
         self.frame_index = 0
+        self.finished = False
 
     #updating the animation
     def next(self, dt=0):
         self.frame_index += self.animation_speed * dt * 60
+        if self.frame_index > len(self.sprites) - 1:
+            self.finished = True
 
     #accessing the current sprite
     def get_sprite(self):
@@ -30,5 +33,3 @@ class SpriteAnimator:
             if self.loop:
                 self.reset_frame()
                 return self.sprites[self.frame_index]
-            else:
-                self.finished = True
