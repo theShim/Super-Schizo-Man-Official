@@ -6,6 +6,7 @@ with contextlib.redirect_stdout(None):
 from scripts.entities.player import Player
 from scripts.particles.particle_manager import Particle_Manager
 from scripts.world_loading.tilemap import Tilemap
+from scripts.world_loading.light_manager import Light_Manager
 
 from scripts.config.SETTINGS import WIDTH, HEIGHT, FPS, Z_LAYERS
 
@@ -90,6 +91,7 @@ class State:
         self.prev = prev #the previous state
         self.tilemap = Tilemap(self.game)
         self.particle_manager = Particle_Manager(self.game, self)
+        self.light_manager = Light_Manager(self.game)
 
         self.bg_music = None
 
@@ -117,7 +119,9 @@ class State:
                     self.game.all_sprites.sprites() + 
                     [tile for tile in self.tilemap.offgrid_render()] + 
                     self.tilemap.nature_manager.render() + 
-                    self.tilemap.render()
+                    self.tilemap.render() + 
+                    [tile for tile in self.tilemap.on_screen_tiles(self.game.offset)] +
+                    [self.light_manager]
                 ), 
                 key=lambda s: s.z
             ):

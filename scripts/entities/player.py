@@ -255,9 +255,7 @@ class Player(pygame.sprite.Sprite):
         rect = spr.get_rect(midbottom=self.hitbox.midbottom - self.game.offset)
         self.screen.blit(spr, rect)
 
-        light = pygame.Surface(((s := max(self.size) * 1.2), s), pygame.SRCALPHA)
-        pygame.draw.circle(light, (255, 255, 255, 120), vec(light.get_size())/2, light.width/2)
-        self.game.state_loader.current_state.dark.blit(light, light.get_rect(center=rect.center), special_flags=pygame.BLEND_RGBA_ADD)
+        self.game.state_loader.current_state.light_manager.add_glow(self.hitbox.center, 96, (255, 255, 255))
 
         # if DEBUG: #hitbox
         #     pygame.draw.rect(self.screen, (200, 0, 0), [self.hitbox.x - self.game.offset.x, self.hitbox.y - self.game.offset.y, *self.hitbox.size], 1)

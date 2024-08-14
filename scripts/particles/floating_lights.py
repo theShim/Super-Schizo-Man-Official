@@ -26,6 +26,11 @@ class Floating_Light(pygame.sprite.Sprite):
         self.col = random.choice([(187, 173, 182), (199, 204, 225), (208, 212, 234)])
         self.vel = vec(random.uniform(4, 5), random.uniform(-4, 0)) / 4
 
+        alpha_layers = 5
+        self.light = pygame.Surface((self.radius * alpha_layers ** 2, self.radius * alpha_layers ** 2), pygame.SRCALPHA)
+        for i in range(alpha_layers):
+            pygame.draw.circle(self.light, (255, 255, 255, 64 * ((i) / alpha_layers)), vec(self.light.get_size())/2, self.radius**(alpha_layers - (i-0.1)))
+
     def update(self):
         self.vel.y -= random.uniform(-1, 1.25) / 10
         self.angle += (self.vel.magnitude() / 100) * self.rot_direction * (self.game.dt * 80)
@@ -49,9 +54,4 @@ class Floating_Light(pygame.sprite.Sprite):
         ]
         pygame.draw.polygon(surf, self.col + (128,), points)
         self.screen.blit(surf, surf.get_rect(center=self.pos))
-
-        alpha_layers = 5
-        light = pygame.Surface((self.radius * alpha_layers ** 2, self.radius * alpha_layers ** 2), pygame.SRCALPHA)
-        for i in range(alpha_layers):
-            pygame.draw.circle(light, (255, 255, 255, 64 * ((i) / alpha_layers)), vec(light.get_size())/2, self.radius**(alpha_layers - (i-0.1)))
-        self.screen.blit(light, light.get_rect(center=self.pos))
+        self.screen.blit(self.light, self.light.get_rect(center=self.pos))

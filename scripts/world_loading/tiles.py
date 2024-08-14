@@ -6,7 +6,7 @@ with contextlib.redirect_stdout(None):
 import os
 
 from scripts.config.SETTINGS import TILE_SIZE, WIDTH, HEIGHT, Z_LAYERS
-from scripts.utils.CORE_FUNCS import add_loaded_sprite_number
+from scripts.utils.CORE_FUNCS import add_loaded_sprite_number, vec
 from scripts.utils.spritesheets import Spritesheet
 
     ##############################################################################################
@@ -57,7 +57,17 @@ class Tile(pygame.sprite.Sprite):
                 add_loaded_sprite_number(len(imgs))
                 cls.SPRITES[name.lower()] = imgs
 
-    def __init__(self, game, type_, variant, pos):
+
+        cls.NORMAL_LIGHT_MAPS = {}
+        path = "assets/light_maps/tiles"
+
+        for name in os.listdir(path):
+            img = pygame.image.load(f"{path}/{name}").convert_alpha()
+            img.set_colorkey((0, 0, 0))
+            add_loaded_sprite_number(1)
+            cls.NORMAL_LIGHT_MAPS[int(name.split(".")[0])] = img
+
+    def __init__(self, game, type_, variant, pos, normal=None):
         super().__init__()
         self.game = game
         self.screen = self.game.screen
@@ -67,6 +77,8 @@ class Tile(pygame.sprite.Sprite):
         self.pos = pos
         self.z = Z_LAYERS["foreground tiles"]
 
+        self.normal = normal
+
     #dictionary object used for json saving
     @property
     def dict(self) -> dict:
@@ -74,20 +86,27 @@ class Tile(pygame.sprite.Sprite):
     
     #actually draw it onto the screen
     def update(self, transparent=False, dim=0):
-        img: pygame.Surface = Tile.SPRITES[self.type][self.variant].copy()
+        # img: pygame.Surface = Tile.SPRITES[self.type][self.variant].copy()
 
-        if transparent:
-            img.set_alpha(128)
+        # if transparent:
+        #     img.set_alpha(128)
 
-        if dim != 0:
-            dark = self.DARK.copy()
-            dark.set_alpha(255 * (dim / 100))
-            img.blit(dark, (0, 0))
+        # if dim != 0:
+        #     dark = self.DARK.copy()
+        #     dark.set_alpha(255 * (dim / 100))
+        #     img.blit(dark, (0, 0))
 
-        self.screen.blit(img, [
-            (self.pos[0] * TILE_SIZE) - self.game.offset.x, 
-            (self.pos[1] * TILE_SIZE) - self.game.offset.y
-        ])
+        # self.screen.blit(img, [
+        #     (self.pos[0] * TILE_SIZE) - self.game.offset.x, 
+        #     (self.pos[1] * TILE_SIZE) - self.game.offset.y
+        # ])
+
+        if self.normal != None:
+            # self.screen.blit(Tile.NORMAL_LIGHT_MAPS[self.normal], [
+            #     (self.pos[0] * TILE_SIZE) - self.game.offset.x, 
+            #     (self.pos[1] * TILE_SIZE) - self.game.offset.y
+            # ])
+            self.game.state_loader.current_state.light_manager.add_tile_highlight(Tile.NORMAL_LIGHT_MAPS[self.normal], vec(self.pos) * TILE_SIZE)
 
     ##############################################################################################
 

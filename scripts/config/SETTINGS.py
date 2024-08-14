@@ -45,6 +45,7 @@ Z_LAYERS: dict[str , int] = {
     "attacks": 10, 
     "foreground offgrid" : 11,
     "foreground particle" : 12,
+    "light and shadow" : 13,
     "in-game gui" : 14
 }
 
@@ -62,6 +63,7 @@ Z_LAYERS: dict[str , int] = {
     "attacks": 10, 
     "foreground offgrid" : 11,
     "foreground particle" : 12,
+    "light and shadow" : 13,
     "in-game gui" : 14
 """
     ##############################################################################################

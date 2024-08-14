@@ -65,6 +65,13 @@ class Fire_Particle(pygame.sprite.Sprite):
         self.draw()
 
     def draw(self):
+        # pygame.draw.circle(self.screen, (255, self.yellow, 0), self.pos - self.game.offset, self.radius * 2)
+        
+        # for i in range(self.alpha_layers):
+        #     surf = pygame.Surface((self.max_size, self.max_size), pygame.SRCALPHA)
+        #     pygame.draw.circle(surf, (255 / (i + 3), self.yellow / (i + 3), 0), vec(surf.get_size())/2, self.radius * (i + 3))
+        #     self.screen.blit(surf, surf.get_rect(center=self.pos-self.game.offset), special_flags=pygame.BLEND_RGB_ADD)
+
         surf = pygame.Surface((self.max_size, self.max_size), pygame.SRCALPHA)
 
         for i in range(self.alpha_layers, -1, -1):
@@ -75,3 +82,5 @@ class Fire_Particle(pygame.sprite.Sprite):
             pygame.draw.circle(surf, (255, self.yellow, 0, alpha), list(map(lambda x: x/2, surf.get_size())), radius)
             
         self.screen.blit(surf, surf.get_rect(center=self.pos-self.game.offset))
+
+        self.game.state_loader.current_state.light_manager.add_glow(self.pos, 0.5 * self.radius * self.alpha_glow * (self.alpha_layers)**2, (255, 255, 255))

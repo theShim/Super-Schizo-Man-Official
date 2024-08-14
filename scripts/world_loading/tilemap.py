@@ -51,13 +51,27 @@ class Tilemap:
 
     #remember to "cull" tiles in layers behind a tile infront to reduce tiles being rendered
 
-    def add_tile(self, layer: int, type: str, variant: int, tile_loc: str, pos: list[int, int]):
+    def add_tile(self, layer: int, type: str, variant: int, tile_loc: str, pos: list[int, int], no_neighbours: list[bool, bool, bool, bool] = [False, False, False, False]):
         #adding a new layer dict if it doesnt exist. this will need to be culled later to avoid 
         #tiles "behind" other tiles being blitted unnecessarily, and also cull empty dicts for file storage
         if layer not in self.tilemap.keys():
             self.tilemap[layer] = {}
 
-        self.tilemap[layer][tile_loc] = Tile(self.game, type, variant, pos)
+        normals_dict = {
+            #[left, right, top, down]
+            tuple([True, False, True, False]) : 0,
+            tuple([False, False, True, False]) : 1,
+            tuple([False, True, True, False]) : 2,
+            tuple([True, False, False, False]) : 3,
+            tuple([False, False, False, False]) : 4,
+            tuple([False, True, False, False]) : 5,
+            tuple([True, False, False, True]) : 6,
+            tuple([False, False, False, True]) : 7,
+            tuple([False, True, False, True]) : 8
+        }
+        normal = normals_dict.get(tuple(no_neighbours), normals_dict[tuple([False, False, False, False])])
+
+        self.tilemap[layer][tile_loc] = Tile(self.game, type, variant, pos, normal=normal)
 
     def add_offgrid_tile(self, type: str, variant: int, pos: list[int, int]):
         if self.editor_flag:
@@ -84,13 +98,16 @@ class Tilemap:
                 tile_pos.x -= self.lowest_x
                 tile_pos.y -= self.lowest_y
 
-                image = Tile.SPRITES[tile.type][tile.variant].copy()
+                image: pygame.Surface = Tile.SPRITES[tile.type][tile.variant].copy()
 
                 if (dim := layer * 20) != 0:
                     dark = pygame.mask.from_surface(image).to_surface(setcolor=(0, 0, 0, 255), unsetcolor=(255, 255, 255))
                     dark.set_colorkey((255, 255, 255))
                     dark.set_alpha(255 * (dim / 100))
                     image.blit(dark, (0, 0))
+
+                # if tile.normal != None and layer == 0:
+                #     image.blit(Tile.NORMAL_LIGHT_MAPS[tile.normal], [0, 0], special_flags=pygame.BLEND_RGBA_MULT)
 
                 self.map.blit(image, tile_pos * TILE_SIZE)
 
@@ -183,14 +200,19 @@ class Tilemap:
 
             for dic in data["tilemap"][layer]:
                 tile_data = data["tilemap"][layer][dic]
-
                 pos = tile_data["pos"]
+
+                #for the "normal maps" (improve them later)
+                no_neighbours = [f"{int(pos[0] + offset[0])};{int(pos[1] + offset[1])}" not in data["tilemap"][layer]
+                            for offset in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
+                
                 self.add_tile(
                     int(layer), 
                     tile_data["type"], 
                     tile_data["variant"], 
                     f"{int(pos[0])};{int(pos[1])}", 
-                    tile_data["pos"]
+                    tile_data["pos"],
+                    no_neighbours
                 )
 
                 if self.editor_flag:
@@ -281,6 +303,21 @@ class Tilemap:
             if (self.game.offset.x - TILE_SIZE < tile.pos[0] < self.game.offset.x + WIDTH and
                 self.game.offset.y - TILE_SIZE < tile.pos[1] < self.game.offset.y + HEIGHT):
                 yield tile
+
+    def on_screen_tiles(self, offset, buffer=[0, 0]):
+        start_x = int(offset.x // (self.tile_size) - buffer[0])
+        end_x = int((offset.x + self.map.get_width()) // self.tile_size  + buffer[0]) + 1
+        start_y = int(offset.y // (self.tile_size) - buffer[1])
+        end_y = int((offset.y + self.map.get_height()) // self.tile_size + buffer[1]) + 1
+
+        for x in range(start_x, end_x):
+            for y in range(start_y, end_y):
+                loc = f"{x};{y}"
+                if loc in self.tilemap[0]:
+                    tile: Tile = self.tilemap[0][loc]
+
+                    # if tile.type not in INVISIBLE_TILES or self.editor_flag == True:
+                    yield tile
 
 
 
