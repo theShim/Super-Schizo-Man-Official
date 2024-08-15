@@ -111,8 +111,11 @@ class Timer:
         self.t = 0
         self.finished = False
 
+    def change_duration(self, duration: float|int):
+        self.end = float(duration)
+
     def change_speed(self, speed: float|int):
-        self.speed = speed
+        self.speed = float(speed)
 
     def update(self):
         if self.run:

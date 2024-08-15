@@ -13,6 +13,7 @@ import random
 
 from scripts.entities.player import Player
 from scripts.entities.bord import Bord
+from scripts.entities.firefly import FireFly_Cluster
 from scripts.nature.nature_tiles.grass import Grass_Manager
 from scripts.states.state_machine import State_Loader
 from scripts.world_loading.tiles import Tile, Offgrid_Tile
@@ -53,6 +54,7 @@ class Game:
         self.entities = pygame.sprite.Group()
         self.player = Player(self, [self.all_sprites, self.entities], char_num=2)
         [Bord(self, [self.all_sprites, self.entities], (WIDTH/2 + (i * 10), -HEIGHT/2 + 250)) for i in range(5)]
+        FireFly_Cluster(self, [self.all_sprites, self.entities], (WIDTH/2 + 200, -HEIGHT/2 + 300), 8)
 
         self.state_loader = State_Loader(self, start="debug")
         self.state_loader.populate_states()

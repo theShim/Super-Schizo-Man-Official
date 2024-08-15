@@ -120,7 +120,7 @@ class State:
                     [tile for tile in self.tilemap.offgrid_render()] + 
                     self.tilemap.nature_manager.render() + 
                     self.tilemap.render() + 
-                    [tile for tile in self.tilemap.on_screen_tiles(self.game.offset)] +
+                    # [tile for tile in self.tilemap.on_screen_tiles(self.game.offset)] +
                     [self.light_manager]
                 ), 
                 key=lambda s: s.z

@@ -42,6 +42,7 @@ class Tilemap:
 
         self.back_map = None
         self.front_map = None
+        self.light_map = None
         self.map = None
         self.lowest_x, self.lowest_y = 0, 0
 
@@ -117,6 +118,7 @@ class Tilemap:
                     self.back_map.blit(image, tile_pos * TILE_SIZE)
 
         self.back_map = Map_Container(self.game, self.back_map, self.lowest_x, self.lowest_y, Z_LAYERS["background tiles"])
+        self.light_map = Map_Container(self.game, pygame.mask.from_surface(self.front_map).to_surface(setcolor=(130, 130, 130), unsetcolor=(0, 0, 0)), self.lowest_x, self.lowest_y, Z_LAYERS["light and shadow"])
         self.front_map = Map_Container(self.game, self.front_map, self.lowest_x, self.lowest_y, Z_LAYERS["foreground tiles"])
 
         ##################################################################################
@@ -330,7 +332,11 @@ class Map_Container:
         self.lowest_x = lowest_x
         self.lowest_y = lowest_y
 
-    def update(self):
+    def update(self, flags=None):
         section_map = crop(self.map, self.game.offset.x - self.lowest_x * TILE_SIZE, self.game.offset.y - self.lowest_y * TILE_SIZE, WIDTH, HEIGHT)
         section_map.set_colorkey((0, 0, 0))
-        self.game.screen.blit(section_map, (0, 0))
+
+        if flags:
+            self.game.screen.blit(section_map, (0, 0), special_flags=flags)
+        else:
+            self.game.screen.blit(section_map, (0, 0))

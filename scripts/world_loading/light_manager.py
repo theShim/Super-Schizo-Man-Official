@@ -8,7 +8,7 @@ import random
 import math
 
 from scripts.utils.CORE_FUNCS import vec
-from scripts.config.SETTINGS import Z_LAYERS, SIZE
+from scripts.config.SETTINGS import Z_LAYERS, SIZE, TILE_SIZE
 
     ################################################################################################
 
@@ -34,7 +34,7 @@ class Light_Manager:
         
         
     def reset(self):
-        self.light_layer.fill((150, 150, 150))
+        self.light_layer.fill((100, 100, 100))
 
         ###################################################################################
 
@@ -63,8 +63,10 @@ class Light_Manager:
 
         ###################################################################################
 
-    def add_tile_highlight(self, normal, pos):
-        self.light_layer.blit(normal, pos - self.game.offset, special_flags=pygame.BLEND_RGBA_ADD)
+    # def add_tile_highlight(self, normal, pos):
+    #     # self.light_layer.fill((100, 100, 100, 255), [pos.x - self.game.offset.x, pos.y - self.game.offset.y, TILE_SIZE, TILE_SIZE], special_flags=pygame.BLEND_RGBA_SUB)
+    #     if ((pos - self.game.offset) + vec(TILE_SIZE, TILE_SIZE) / 2).distance_to(self.game.player.hitbox.center - self.game.offset) < 96:
+    #         self.light_layer.blit(normal, pos - self.game.offset + vec(0, 1), special_flags=pygame.BLEND_RGBA_ADD)
 
         ###################################################################################
 
@@ -74,3 +76,4 @@ class Light_Manager:
 
     def draw(self):
         self.screen.blit(self.light_layer, (0, 0), special_flags = pygame.BLEND_RGBA_MULT)
+        # self.game.state_loader.current_state.tilemap.light_map.update(pygame.BLEND_RGBA_MIN)
