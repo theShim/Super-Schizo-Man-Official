@@ -86,22 +86,23 @@ class Tile(pygame.sprite.Sprite):
     
     #actually draw it onto the screen
     def update(self, transparent=False, dim=0):
-        # img: pygame.Surface = Tile.SPRITES[self.type][self.variant].copy()
+        if self.normal == None:
+            img: pygame.Surface = Tile.SPRITES[self.type][self.variant].copy()
 
-        # if transparent:
-        #     img.set_alpha(128)
+            if transparent:
+                img.set_alpha(128)
 
-        # if dim != 0:
-        #     dark = self.DARK.copy()
-        #     dark.set_alpha(255 * (dim / 100))
-        #     img.blit(dark, (0, 0))
+            if dim != 0:
+                dark = self.DARK.copy()
+                dark.set_alpha(255 * (dim / 100))
+                img.blit(dark, (0, 0))
 
-        # self.screen.blit(img, [
-        #     (self.pos[0] * TILE_SIZE) - self.game.offset.x, 
-        #     (self.pos[1] * TILE_SIZE) - self.game.offset.y
-        # ])
+            self.screen.blit(img, [
+                (self.pos[0] * TILE_SIZE) - self.game.offset.x, 
+                (self.pos[1] * TILE_SIZE) - self.game.offset.y
+            ])
 
-        if self.normal != None:
+        if self.normal != None and self.normal != 4:
             # self.screen.blit(Tile.NORMAL_LIGHT_MAPS[self.normal], [
             #     (self.pos[0] * TILE_SIZE) - self.game.offset.x, 
             #     (self.pos[1] * TILE_SIZE) - self.game.offset.y

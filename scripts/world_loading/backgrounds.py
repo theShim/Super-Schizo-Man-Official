@@ -6,7 +6,7 @@ with contextlib.redirect_stdout(None):
 import random
 import math
 
-from scripts.config.SETTINGS import WIDTH, HEIGHT
+from scripts.config.SETTINGS import WIDTH, HEIGHT, SIZE
 from scripts.utils.CORE_FUNCS import vec
 
     ############################################################################################## 
@@ -112,3 +112,24 @@ class Editor_Background2:
                 particle["pos"].x = 0
                 particle["pos"].y = random.uniform(0, HEIGHT)
                 particle["vel"] = vec(random.uniform(4, 6), random.uniform(0, 0))
+
+    ############################################################################################## 
+
+class Night_Sky:
+    def __init__(self, game):
+        self.game = game
+        self.screen = self.game.screen
+
+        self.bg = pygame.Surface((1280, 400), pygame.SRCALPHA)
+        col1 = pygame.Color(40+16, 45+10, 73+30)
+        col2 = pygame.Color(5+16, 4+10, 30+30)
+        for y in range(HEIGHT//2):
+            t = y / (HEIGHT//2)
+            col = col1.lerp(col2, t)
+            pygame.draw.line(self.bg, col, (0, y), (WIDTH*2, y))
+        pygame.draw.rect(self.bg, col2, [0, HEIGHT//2, WIDTH*2, HEIGHT//2])
+
+        # self.bg.blit(pygame.transform.scale(pygame.image.load("assets/backgrounds/night_sky/0.png").convert_alpha(), (1280, 400)), (0, 0))
+
+    def update(self):
+        self.screen.blit(self.bg, (-self.game.offset.x / 4, 0))

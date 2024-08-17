@@ -119,6 +119,9 @@ class Game:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     self.running = False
+                elif event.key == pygame.K_F7:
+                    global DEBUG
+                    DEBUG = not DEBUG
 
 
     def run(self):

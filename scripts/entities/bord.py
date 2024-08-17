@@ -233,4 +233,4 @@ class Bord(pygame.sprite.Sprite):
         rect = spr.get_rect(midbottom=self.hitbox.midbottom - self.game.offset)
         self.screen.blit(spr, rect)
         
-        self.game.state_loader.current_state.light_manager.add_glow(self.hitbox.midbottom - vec(0, 4), 32, (200, 200, 200))
+        self.game.state_loader.current_state.light_manager.add_glow(self.hitbox.midbottom - vec(0, 4), 32, (61, 216, 251))

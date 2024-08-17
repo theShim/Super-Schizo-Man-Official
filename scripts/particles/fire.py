@@ -83,4 +83,4 @@ class Fire_Particle(pygame.sprite.Sprite):
             
         self.screen.blit(surf, surf.get_rect(center=self.pos-self.game.offset))
 
-        self.game.state_loader.current_state.light_manager.add_glow(self.pos, 1 * self.radius * self.alpha_glow * (self.alpha_layers)**2, (255, self.yellow, 0))
+        self.game.state_loader.current_state.light_manager.add_glow(self.pos, 1 * self.radius * self.alpha_glow * (self.alpha_layers)**2, (255, min(255, self.yellow * 2), 0))

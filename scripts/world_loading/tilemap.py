@@ -72,7 +72,7 @@ class Tilemap:
         }
         normal = normals_dict.get(tuple(no_neighbours), normals_dict[tuple([False, False, False, False])])
 
-        self.tilemap[layer][tile_loc] = Tile(self.game, type, variant, pos, normal=normal)
+        self.tilemap[layer][tile_loc] = Tile(self.game, type, variant, pos, normal=normal if not self.editor_flag else None)
 
     def add_offgrid_tile(self, type: str, variant: int, pos: list[int, int]):
         if self.editor_flag:
@@ -118,7 +118,7 @@ class Tilemap:
                     self.back_map.blit(image, tile_pos * TILE_SIZE)
 
         self.back_map = Map_Container(self.game, self.back_map, self.lowest_x, self.lowest_y, Z_LAYERS["background tiles"])
-        self.light_map = Map_Container(self.game, pygame.mask.from_surface(self.front_map).to_surface(setcolor=(130, 130, 130), unsetcolor=(0, 0, 0)), self.lowest_x, self.lowest_y, Z_LAYERS["light and shadow"])
+        self.light_map = Map_Container(self.game, self.front_map.copy(), self.lowest_x, self.lowest_y, Z_LAYERS["light and shadow"])
         self.front_map = Map_Container(self.game, self.front_map, self.lowest_x, self.lowest_y, Z_LAYERS["foreground tiles"])
 
         ##################################################################################
@@ -332,11 +332,12 @@ class Map_Container:
         self.lowest_x = lowest_x
         self.lowest_y = lowest_y
 
-    def update(self, flags=None):
+    def update(self, screen=None, flags=None):
         section_map = crop(self.map, self.game.offset.x - self.lowest_x * TILE_SIZE, self.game.offset.y - self.lowest_y * TILE_SIZE, WIDTH, HEIGHT)
         section_map.set_colorkey((0, 0, 0))
 
+        screen: pygame.Surface = screen or self.game.screen
         if flags:
-            self.game.screen.blit(section_map, (0, 0), special_flags=flags)
+            screen.blit(section_map, (0, 0), special_flags=flags)
         else:
-            self.game.screen.blit(section_map, (0, 0))
+            screen.blit(section_map, (0, 0))

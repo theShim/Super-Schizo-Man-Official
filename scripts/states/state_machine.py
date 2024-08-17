@@ -93,6 +93,7 @@ class State:
         self.particle_manager = Particle_Manager(self.game, self)
         self.light_manager = Light_Manager(self.game)
 
+        self.bg = None
         self.bg_music = None
 
     def update(self):
@@ -101,6 +102,7 @@ class State:
         #         self.game.music_player.set_vol(vol=1, channel="bg")
         #         self.game.music_player.play(self.bg_music, "bg", loop=True, fade_in=1000)
 
+        self.bg.update()
         self.tilemap.nature_manager.update()
         self.particle_manager.update()
 

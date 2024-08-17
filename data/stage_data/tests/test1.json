@@ -3701,7 +3701,7 @@
             },
             "20;5": {
                 "type": "midground_1",
-                "variant": 73,
+                "variant": 40,
                 "pos": [
                     20,
                     5
@@ -3725,7 +3725,7 @@
             },
             "21;5": {
                 "type": "midground_1",
-                "variant": 106,
+                "variant": 49,
                 "pos": [
                     21,
                     5
@@ -3765,7 +3765,7 @@
             },
             "22;4": {
                 "type": "midground_1",
-                "variant": 90,
+                "variant": 49,
                 "pos": [
                     22,
                     4
@@ -3773,7 +3773,7 @@
             },
             "23;4": {
                 "type": "midground_1",
-                "variant": 91,
+                "variant": 49,
                 "pos": [
                     23,
                     4
@@ -3837,7 +3837,7 @@
             },
             "24;4": {
                 "type": "midground_1",
-                "variant": 99,
+                "variant": 49,
                 "pos": [
                     24,
                     4
@@ -3877,7 +3877,7 @@
             },
             "26;3": {
                 "type": "midground_1",
-                "variant": 87,
+                "variant": 49,
                 "pos": [
                     26,
                     3
@@ -3885,7 +3885,7 @@
             },
             "25;3": {
                 "type": "midground_1",
-                "variant": 95,
+                "variant": 49,
                 "pos": [
                     25,
                     3
@@ -3893,7 +3893,7 @@
             },
             "27;3": {
                 "type": "midground_1",
-                "variant": 105,
+                "variant": 49,
                 "pos": [
                     27,
                     3
@@ -3925,7 +3925,7 @@
             },
             "28;2": {
                 "type": "midground_1",
-                "variant": 104,
+                "variant": 49,
                 "pos": [
                     28,
                     2
@@ -3933,7 +3933,7 @@
             },
             "29;1": {
                 "type": "midground_1",
-                "variant": 97,
+                "variant": 49,
                 "pos": [
                     29,
                     1
@@ -4149,7 +4149,7 @@
             },
             "30;0": {
                 "type": "midground_1",
-                "variant": 97,
+                "variant": 49,
                 "pos": [
                     30,
                     0
@@ -5503,7 +5503,7 @@
             },
             "13;1": {
                 "type": "midground_1",
-                "variant": 0,
+                "variant": 17,
                 "pos": [
                     13,
                     1
@@ -5511,7 +5511,7 @@
             },
             "14;1": {
                 "type": "midground_1",
-                "variant": 86,
+                "variant": 53,
                 "pos": [
                     14,
                     1
@@ -5527,7 +5527,7 @@
             },
             "15;2": {
                 "type": "midground_1",
-                "variant": 41,
+                "variant": 53,
                 "pos": [
                     15,
                     2
@@ -5543,7 +5543,7 @@
             },
             "16;2": {
                 "type": "midground_1",
-                "variant": 58,
+                "variant": 53,
                 "pos": [
                     16,
                     2
@@ -5583,7 +5583,7 @@
             },
             "17;2": {
                 "type": "midground_1",
-                "variant": 55,
+                "variant": 53,
                 "pos": [
                     17,
                     2
@@ -5599,7 +5599,7 @@
             },
             "18;3": {
                 "type": "midground_1",
-                "variant": 54,
+                "variant": 53,
                 "pos": [
                     18,
                     3
@@ -5671,7 +5671,7 @@
             },
             "19;5": {
                 "type": "midground_1",
-                "variant": 54,
+                "variant": 53,
                 "pos": [
                     19,
                     5
@@ -5679,7 +5679,7 @@
             },
             "19;4": {
                 "type": "midground_1",
-                "variant": 56,
+                "variant": 53,
                 "pos": [
                     19,
                     4
@@ -5687,7 +5687,7 @@
             },
             "19;3": {
                 "type": "midground_1",
-                "variant": 57,
+                "variant": 53,
                 "pos": [
                     19,
                     3
@@ -5863,7 +5863,7 @@
             },
             "20;2": {
                 "type": "midground_1",
-                "variant": 57,
+                "variant": 53,
                 "pos": [
                     20,
                     2
@@ -5943,7 +5943,7 @@
             },
             "21;1": {
                 "type": "midground_1",
-                "variant": 51,
+                "variant": 53,
                 "pos": [
                     21,
                     1

@@ -73,7 +73,6 @@ class Bord_Particle(pygame.sprite.Sprite):
         pygame.draw.line(self.screen, self.col, self.pos - self.game.offset, self.tail - self.game.offset, 2)
 
     def draw(self):
-        # Calculate the bounding box for the line
         min_x = min(self.pos[0], self.tail[0])
         min_y = min(self.pos[1], self.tail[1])
         max_x = max(self.pos[0], self.tail[0])
@@ -82,16 +81,10 @@ class Bord_Particle(pygame.sprite.Sprite):
         width = max_x - min_x
         height = max_y - min_y
         
-        # Create a smaller surface to fit the line
         temp_surface = pygame.Surface((width + 1, height + 1), pygame.SRCALPHA)
         
-        # Adjusted start and end positions relative to the temp_surface
         start_pos = (self.pos[0] - min_x, self.pos[1] - min_y)
         end_pos = (self.tail[0] - min_x, self.tail[1] - min_y)
+        pygame.draw.line(temp_surface, self.col + (self.alpha,), start_pos, end_pos, 2)
         
-        # Draw the line on the smaller surface
-        line_color = self.col + (self.alpha,)
-        pygame.draw.line(temp_surface, line_color, start_pos, end_pos, 2)
-        
-        # Blit the smaller surface onto the main screen
         self.screen.blit(temp_surface, (min_x - self.game.offset[0], min_y - self.game.offset[1]))

@@ -84,7 +84,7 @@ class Grass_Manager:
         surf.blit(rot_img, (pos[0] - rot_img.get_width() // 2, pos[1] - rot_img.get_height() // 2))
 
 class Grass_Tile(pygame.sprite.Sprite):
-    def __init__(self, game, manager, pos, variant, id, grass_config:list[int] = [0, 1, 2, 3]):
+    def __init__(self, game, manager, pos, variant, id, grass_config:list[int] = [0, 1, 2, 3, 4]):
         super().__init__()
         self.game = game
         self.screen = self.game.screen
@@ -92,7 +92,7 @@ class Grass_Tile(pygame.sprite.Sprite):
 
         self.type = 'grass'
         self.variant = variant
-        self.pos = [pos[0], pos[1] + self.manager.GRASS_IMGS["MAX_GRASS_HEIGHT"]]
+        self.pos = [pos[0], pos[1] + self.manager.GRASS_IMGS["MAX_GRASS_HEIGHT"] + .5]
         self.z = Z_LAYERS["midground offgrid"]
 
         self.base_id = id
@@ -172,7 +172,7 @@ class Grass_Tile(pygame.sprite.Sprite):
         else:
             self.screen.blit(self.custom_tile_render(), (self.pos[0] - self.game.offset[0] - self.padding, self.pos[1] - self.game.offset[1] - self.padding))
 
-        # attempt to move blades back to their base position
+        #attempt to move blades back to their base position
         if self.pushed_blade_data:
             matching = True
             for i, blade in enumerate(self.pushed_blade_data):
@@ -180,6 +180,6 @@ class Grass_Tile(pygame.sprite.Sprite):
                 blade[2] = normalize(blade[2], stiffness, self.grass_blades[i]["angle"])
                 if blade[2] != self.grass_blades[i]["angle"]:
                     matching = False
-            # mark the data as non-custom once in base position so the cache can be used
+            #mark the data as non-custom once in base position so the cache can be used
             if matching:
                 self.pushed_blade_data = None

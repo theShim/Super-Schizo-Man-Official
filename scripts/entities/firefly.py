@@ -60,7 +60,7 @@ class FireFly(pygame.sprite.Sprite):
     def move(self):
         self.direction = lerp(self.direction, self.direction_target, 0.5)
         if abs(self.direction_target - self.direction) < 0.01:
-            self.direction_target = math.radians(random.randint(0, 360))
+            self.direction_target = math.radians(random.randint(2, 358))
 
         self.vel = vec(math.cos(self.direction), math.sin(self.direction)) * self.speed * self.pixel_size
 

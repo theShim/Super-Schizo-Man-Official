@@ -63,10 +63,10 @@ class Light_Manager:
 
         ###################################################################################
 
-    # def add_tile_highlight(self, normal, pos):
-    #     # self.light_layer.fill((100, 100, 100, 255), [pos.x - self.game.offset.x, pos.y - self.game.offset.y, TILE_SIZE, TILE_SIZE], special_flags=pygame.BLEND_RGBA_SUB)
-    #     if ((pos - self.game.offset) + vec(TILE_SIZE, TILE_SIZE) / 2).distance_to(self.game.player.hitbox.center - self.game.offset) < 96:
-    #         self.light_layer.blit(normal, pos - self.game.offset + vec(0, 1), special_flags=pygame.BLEND_RGBA_ADD)
+    def add_tile_highlight(self, normal, pos):
+        # self.light_layer.fill((100, 100, 100, 255), [pos.x - self.game.offset.x, pos.y - self.game.offset.y, TILE_SIZE, TILE_SIZE], special_flags=pygame.BLEND_RGBA_SUB)
+        if ((pos - self.game.offset) + vec(TILE_SIZE, TILE_SIZE) / 2).distance_to(self.game.player.hitbox.center - self.game.offset) < 80:
+            self.light_layer.blit(normal, pos - self.game.offset + vec(0, 1), special_flags=pygame.BLEND_RGBA_ADD)
 
         ###################################################################################
 
