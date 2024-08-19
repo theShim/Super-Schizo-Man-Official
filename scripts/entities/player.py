@@ -81,6 +81,10 @@ class Player(pygame.sprite.Sprite):
         self.jumpHeld = False #ensures player only jumps once
 
         self.landed = False #checks if the player is currently on the floor
+        self.in_water = False
+        self.in_water_duration = 0 #how long theyve been in water
+        self.water_glow_timer = 5
+
         self.squish = 0
         self.squish_vel = 0
 
@@ -235,6 +239,14 @@ class Player(pygame.sprite.Sprite):
         self.animate()
         self.draw()
 
+        if self.in_water:
+            if self.in_water_duration <= 100:
+                self.in_water_duration += self.water_glow_timer
+        elif self.in_water == False:
+            if self.in_water_duration:
+                self.in_water_duration -= self.water_glow_timer
+        self.in_water = False
+
     def get_image(self):
         spr = self.image
 
@@ -255,7 +267,8 @@ class Player(pygame.sprite.Sprite):
         rect = spr.get_rect(midbottom=self.hitbox.midbottom - self.game.offset)
         self.screen.blit(spr, rect)
 
-        self.game.state_loader.current_state.light_manager.add_glow(self.hitbox.center, 96, (255, 255, 255))
+        glow_size = 96 if not self.in_water_duration else lerp(60, 96, min(100, self.in_water_duration) / 100)
+        self.game.state_loader.current_state.light_manager.add_glow(self.hitbox.center, glow_size, (255, 255, 255))
 
         # if DEBUG: #hitbox
         #     pygame.draw.rect(self.screen, (200, 0, 0), [self.hitbox.x - self.game.offset.x, self.hitbox.y - self.game.offset.y, *self.hitbox.size], 1)

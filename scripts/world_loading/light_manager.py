@@ -32,9 +32,16 @@ class Light_Manager:
         self.glow_cache = {"base" : glow_surf}
         self.shadow_cache = {}
         
+        self.l = 100
+        
         
     def reset(self):
-        self.light_layer.fill((100, 100, 100))
+        self.light_layer.fill((self.l, self.l, self.l))
+
+        if (keys:=pygame.key.get_pressed())[pygame.K_COMMA]:
+            self.l = max(0, self.l - 1)
+        if (keys:=pygame.key.get_pressed())[pygame.K_PERIOD]:
+            self.l = min(255, self.l + 1)
 
         ###################################################################################
 

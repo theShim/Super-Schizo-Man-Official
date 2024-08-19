@@ -203,19 +203,23 @@ class Tilemap:
             for dic in data["tilemap"][layer]:
                 tile_data = data["tilemap"][layer][dic]
                 pos = tile_data["pos"]
-
-                #for the "normal maps" (improve them later)
-                no_neighbours = [f"{int(pos[0] + offset[0])};{int(pos[1] + offset[1])}" not in data["tilemap"][layer]
-                            for offset in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
                 
-                self.add_tile(
-                    int(layer), 
-                    tile_data["type"], 
-                    tile_data["variant"], 
-                    f"{int(pos[0])};{int(pos[1])}", 
-                    tile_data["pos"],
-                    no_neighbours
-                )
+                if data['tilemap'][layer][dic]['type'] == "water" and self.editor_flag == False:
+                    self.nature_manager.add_tile("water", data['tilemap'][layer][dic]['pos'], data['tilemap'][layer][dic]['variant'])
+
+                else:
+                    #for the "normal maps" (improve them later)
+                    no_neighbours = [f"{int(pos[0] + offset[0])};{int(pos[1] + offset[1])}" not in data["tilemap"][layer]
+                                for offset in [(-1, 0), (1, 0), (0, -1), (0, 1)]]
+                    
+                    self.add_tile(
+                        int(layer), 
+                        tile_data["type"], 
+                        tile_data["variant"], 
+                        f"{int(pos[0])};{int(pos[1])}", 
+                        tile_data["pos"],
+                        no_neighbours
+                    )
 
                 if self.editor_flag:
                     if int(layer) not in self.game.layers:
@@ -237,6 +241,7 @@ class Tilemap:
                     if int(pos[1]) < lowest_y:
                         lowest_y = int(pos[1])
 
+        self.offgrid_tiles = []
         for dic in data["offgrid"]:
             self.add_offgrid_tile(
                 dic["type"],
@@ -248,6 +253,7 @@ class Tilemap:
             self.max_tile_x = len(tile_x)
             self.max_tile_y = len(tile_y)
             self.generate_map([self.max_tile_x, self.max_tile_y], [lowest_x, lowest_y])
+            self.nature_manager.clump_water()
 
         ##################################################################################
         

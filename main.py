@@ -10,6 +10,7 @@ with contextlib.redirect_stdout(None):
     
 import sys
 import random
+import math
 
 from scripts.entities.player import Player
 from scripts.entities.bord import Bord
@@ -58,6 +59,20 @@ class Game:
 
         self.state_loader = State_Loader(self, start="debug")
         self.state_loader.populate_states()
+
+        # self.state_loader.current_state.particle_manager.add_particle("black flame", pos=(WIDTH*0.75 + 200, -HEIGHT/2 + 300))
+        # self.state_loader.current_state.particle_manager.add_particle("lightning spinner", 
+        #                                                               points=[
+        #                                                                   (WIDTH*0.5+100, -HEIGHT/2 + 180),
+        #                                                                   (WIDTH*0.9, -HEIGHT/2 + 200),
+        #                                                                   (WIDTH*0.8, -HEIGHT/2 + 250),
+        #                                                                   (WIDTH*0.4+100, -HEIGHT/2 + 300),
+        #                                                             ], 
+        #                                                             speed=10,
+        #                                                             colours=[
+        #                                                                 (0, 221, 255),
+        #                                                                 (17, 170, 194),
+        #                                                             ])
 
         if DEBUG:
             self.debugger = Debugger()
@@ -138,6 +153,9 @@ class Game:
 
             self.handle_events()
             self.screen.fill((14, 19, 32))  
+
+            # self.state_loader.current_state.particle_manager.add_particle("bord particle", pos = (WIDTH*0.5, -HEIGHT/2+100), vel=vec(0, random.uniform(0, 1) * 6), col=random.choice([(17+200, 158+80, 214+40), (71+180, 170+80, 209+40)]))
+            # self.state_loader.current_state.particle_manager.add_particle("spark", pos=(WIDTH*0.75 + 200, -HEIGHT/2 + 200), scale=random.uniform(2, 3), angle=math.radians(random.randint(0, 360)), colour=(255, 255, 255), spin=not True, grav=True)
 
             self.state_loader.update()
             if self.zoom != 1:

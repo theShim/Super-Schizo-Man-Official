@@ -89,11 +89,11 @@ class Grass_Tile(pygame.sprite.Sprite):
         self.game = game
         self.screen = self.game.screen
         self.manager: Grass_Manager = manager
+        self.z = Z_LAYERS["midground offgrid"]
 
         self.type = 'grass'
         self.variant = variant
         self.pos = [pos[0], pos[1] + self.manager.GRASS_IMGS["MAX_GRASS_HEIGHT"] + .5]
-        self.z = Z_LAYERS["midground offgrid"]
 
         self.base_id = id
         self.master_rot = 0
