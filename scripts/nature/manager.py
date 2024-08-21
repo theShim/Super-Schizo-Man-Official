@@ -6,7 +6,7 @@ with contextlib.redirect_stdout(None):
 import math
 
 from scripts.nature.nature_tiles.grass import Grass_Manager
-from scripts.nature.nature_tiles.water import Water, Water_Handler
+from scripts.nature.nature_tiles.water import Water, Water_3D, Water_Handler
 
 from scripts.config.SETTINGS import TILE_SIZE, Z_LAYERS, SIZE
 from scripts.utils.CORE_FUNCS import euclidean_distance
@@ -40,7 +40,7 @@ class Nature_Manager:
             width = max(xs) - min(xs) + 1
             height = max(ys) - min(ys) + 1
             variant = g[0][1]
-            self.water_tiles.append(Water(self.game, [x, y], [width, height], variant))
+            self.water_tiles.append(Water_3D(self.game, [x, y], [width, height], variant))
 
     def update(self):
         self.grass_manager.t += 5

@@ -21,13 +21,6 @@ CAMERA_FOLLOW_SPEED = 12
 FRIC = 0.9
 GRAV = 20
 
-ENVIRONMENT_SETTINGS: dict[str, bool | int] = {
-    "rain" : False,
-    "snow" : False,
-    "cherry_blossom" : False,
-    "wind" : -2
-}
-
     ##############################################################################################
     
 TILE_SIZE = 24

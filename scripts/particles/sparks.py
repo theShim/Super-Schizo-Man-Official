@@ -8,7 +8,7 @@ import random
 import math
 
 from scripts.utils.CORE_FUNCS import vec
-from scripts.config.SETTINGS import Z_LAYERS, WIDTH, HEIGHT, ENVIRONMENT_SETTINGS
+from scripts.config.SETTINGS import Z_LAYERS
 
     ##############################################################################################
 

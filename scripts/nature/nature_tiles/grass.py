@@ -7,7 +7,7 @@ import math
 import random
 import os
 
-from scripts.config.SETTINGS import TILE_SIZE, Z_LAYERS, ENVIRONMENT_SETTINGS
+from scripts.config.SETTINGS import TILE_SIZE, Z_LAYERS
 from scripts.utils.CORE_FUNCS import vec, normalize, add_loaded_sprite_number
 
     ##############################################################################################
@@ -158,7 +158,8 @@ class Grass_Tile(pygame.sprite.Sprite):
 
 
     def update(self):
-        self.master_rot = int(math.sin(self.manager.t / 60 + (self.pos[0] / 100)) * ENVIRONMENT_SETTINGS["wind"] * 5)
+        wind = self.game.state_loader.current_state.environment_manager.wind
+        self.master_rot = int(math.sin(self.manager.t / 60 + (self.pos[0] / 100)) * wind * 5)
         self.render_data_update()
 
         if not self.pushed_blade_data:

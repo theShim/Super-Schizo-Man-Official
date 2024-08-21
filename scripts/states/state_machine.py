@@ -5,8 +5,9 @@ with contextlib.redirect_stdout(None):
 
 from scripts.entities.player import Player
 from scripts.particles.particle_manager import Particle_Manager
-from scripts.world_loading.tilemap import Tilemap
 from scripts.world_loading.light_manager import Light_Manager
+from scripts.world_loading.environment_manager import Environment_Manager
+from scripts.world_loading.tilemap import Tilemap
 
 from scripts.config.SETTINGS import WIDTH, HEIGHT, FPS, Z_LAYERS
 
@@ -92,6 +93,7 @@ class State:
         self.tilemap = Tilemap(self.game)
         self.particle_manager = Particle_Manager(self.game, self)
         self.light_manager = Light_Manager(self.game)
+        self.environment_manager = Environment_Manager(self.game, self)
 
         self.bg = None
         self.bg_music = None

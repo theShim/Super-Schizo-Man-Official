@@ -12,10 +12,11 @@ from scripts.particles.floating_lights import Floating_Light
 from scripts.particles.bord import Bord_After_Image, Bord_Particle
 from scripts.particles.black_flame import Black_Fire
 from scripts.particles.sparks import Spark
+from scripts.particles.water_splash import Water_Splash, Water_Splosh
 from scripts.particles.lightning import Lightning
 
 from scripts.utils.CORE_FUNCS import vec
-from scripts.config.SETTINGS import Z_LAYERS, WIDTH, HEIGHT, ENVIRONMENT_SETTINGS
+from scripts.config.SETTINGS import WIDTH, HEIGHT
 
     ##############################################################################################
 
@@ -40,6 +41,8 @@ class Particle_Manager:
             "black flame" : Black_Fire,
             "spark" : Spark,
             "lightning spinner" : Lightning.Spinner,
+            "water splash" : Water_Splash,
+            "water splosh" : Water_Splosh
         }[particle_type]
 
         particle(self.game, [self.game.all_sprites, self.particles], *kwargs.values())
