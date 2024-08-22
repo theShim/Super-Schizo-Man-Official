@@ -5,7 +5,6 @@ with contextlib.redirect_stdout(None):
     
 import math
 import random
-import os
 import numpy as np
 from scipy.interpolate import interp1d
 
@@ -241,8 +240,8 @@ class Water_3D(pygame.sprite.Sprite):
         # if player.vel.y <= 0:
         #     return
         
+        collided = []
         if player.hitbox.y < self.pos.y + 20:
-            collided = False
             bottom_springs = self.bottom_springs.sprites()
             top_springs = self.top_springs.sprites()
             for i, spring in enumerate(bottom_springs):
@@ -250,30 +249,29 @@ class Water_3D(pygame.sprite.Sprite):
                 if player.hitbox.collidepoint(spring.pos):
                     spring.pos.y += min(10, 1.2 ** player.vel.y)
                     top_springs[i].pos.y += min(10, 1.2 ** player.vel.y)
-                    collided = True
+                    collided.append(spring.pos)
                 else:
                     if collided:
                         break
 
-        if self.rect.colliderect(player.hitbox):
+        if self.rect.colliderect(player.hitbox) or collided:
             if player.vel.y > 0:
                 player.vel.y *= 0.84
             player.in_water = True
 
             if player.in_water_duration == 0:
-                # for i in range(max(3, int(player.vel.magnitude()))):
-                #     self.game.state_loader.current_state.particle_manager.add_particle(
-                #         "water splash", 
-                #         pos=(player.hitbox.midbottom), 
-                #         angle=-random.uniform(-100, -80) + player.vel.x * 10,
-                #         col = random.choice([self.base_col, self.outline_colour, self.back_col])
-                #     )
+                collided = collided[:2]
+                try:
+                    x = (collided[0][0] + collided[1][0]) / 2
+                    y = (collided[0][1] + collided[1][1]) / 2
+                except IndexError:
+                    x, y = player.hitbox.midbottom + player.vel * 2
 
-                for i in range(max(5, int(player.vel.magnitude()) * 3)):
+                for i in range(max(0, int(player.vel.y ** 1.35) - 10)):
                     self.game.state_loader.current_state.particle_manager.add_particle(
                         "water splosh", 
-                        pos=(player.hitbox.midbottom), 
-                        vel=vec(random.uniform(-1, 1), -random.uniform(0.2, 1)) * 2,
+                        pos=(x, y), 
+                        vel=vec(random.uniform(-1, 1), -random.uniform(0.2, 1) * 3) * 2,
                         col = random.choice([self.base_col, self.back_col, self.outline_colour])
                     )
 

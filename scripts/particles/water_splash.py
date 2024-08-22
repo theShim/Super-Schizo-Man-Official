@@ -78,8 +78,8 @@ class Water_Splosh(pygame.sprite.Sprite):
         self.screen = self.game.screen
         self.z = Z_LAYERS["foreground particle"]
 
-        self.pos = vec(pos) - vel
-        self.tail = self.pos - vel * (random.randint(10, 15) / 10)
+        self.pos = vec(pos) + vel * (random.randint(10, 15) / 2) / 2
+        self.tail = self.pos
         self.t = 0
         self.decay = random.uniform(0.0125, 0.015) * 1.2
         self.vel: vec = vel / 2
@@ -100,6 +100,7 @@ class Water_Splosh(pygame.sprite.Sprite):
         
         self.pos += self.vel
         self.vel.rotate_ip(self.t * self.rot_direction * self.vel.magnitude())
+        self.vel.y += 0.05
         self.tail = self.tail.lerp(self.pos, min(1, self.t))
         self.draw()
 
