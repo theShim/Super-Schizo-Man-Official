@@ -15,6 +15,8 @@ from scripts.particles.sparks import Spark
 from scripts.particles.water_splash import Water_Splash, Water_Splosh
 from scripts.particles.lightning import Lightning
 
+from scripts.weather.rain import Rain_Particle
+
 from scripts.utils.CORE_FUNCS import vec
 from scripts.config.SETTINGS import WIDTH, HEIGHT
 
@@ -39,6 +41,7 @@ class Particle_Manager:
             "bord after image" : Bord_After_Image,
             "bord particle" : Bord_Particle,
             "black flame" : Black_Fire,
+            'rain' : Rain_Particle,
             "spark" : Spark,
             "lightning spinner" : Lightning.Spinner,
             "water splash" : Water_Splash,

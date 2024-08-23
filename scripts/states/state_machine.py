@@ -4,6 +4,7 @@ with contextlib.redirect_stdout(None):
     from pygame.locals import *
 
 from scripts.entities.player import Player
+from scripts.weather.rain import Rain_Particle
 from scripts.particles.particle_manager import Particle_Manager
 from scripts.world_loading.light_manager import Light_Manager
 from scripts.world_loading.environment_manager import Environment_Manager
@@ -92,8 +93,8 @@ class State:
         self.prev = prev #the previous state
         self.tilemap = Tilemap(self.game)
         self.particle_manager = Particle_Manager(self.game, self)
-        self.light_manager = Light_Manager(self.game)
         self.environment_manager = Environment_Manager(self.game, self)
+        self.light_manager = Light_Manager(self.game)
 
         self.bg = None
         self.bg_music = None
@@ -107,6 +108,7 @@ class State:
         self.bg.update()
         self.tilemap.nature_manager.update()
         self.particle_manager.update()
+        self.environment_manager.update()
 
         self.game.calculate_offset() #camera
         self.game.calculate_zoom()
@@ -117,6 +119,8 @@ class State:
         self.dark = pygame.Surface((WIDTH, HEIGHT))
         self.dark.fill((0, 0, 0))
         self.dark.set_alpha(120)
+
+        tiles = list(self.tilemap.on_screen_tiles(self.game.offset))
 
         for spr in sorted(
                 (
@@ -135,7 +139,11 @@ class State:
                     first_dark = False
                     # self.screen.blit(self.dark, (0, 0))
 
-            spr.update()
+            if isinstance(spr, Rain_Particle):
+                spr.update(tiles)
+
+            else:
+                spr.update()
 
 class Cutscene(State):
     def __init__(self, game, name, prev=None):

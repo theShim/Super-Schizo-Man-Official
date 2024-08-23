@@ -38,6 +38,11 @@ class Environment_Manager:
 
         #light
         if keys[pygame.K_COMMA]:
-            self.light = max(0, self.light - (self.game.dt * 10))
+            self.light = max(0, self.light - (self.game.dt * 100))
         if keys[pygame.K_PERIOD]:
-            self.light = min(255, self.light + (self.game.dt * 10))
+            self.light = min(255, self.light + (self.game.dt * 100))
+
+        #weather
+        if self.weather["rain"]:
+            for i in range(random.randint(1, 6)):
+                self.game.state_loader.current_state.particle_manager.add_particle('rain', pos=[random.uniform(self.game.offset.x - WIDTH * 0.1, WIDTH * 1.1 + self.game.offset.x), self.game.offset.y - 20])

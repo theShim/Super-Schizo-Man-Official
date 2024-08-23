@@ -8,6 +8,8 @@ import random
 import numpy as np
 from scipy.interpolate import interp1d
 
+from scripts.weather.rain import Rain_Splash
+
 from scripts.config.SETTINGS import TILE_SIZE, Z_LAYERS, SIZE, WIDTH, HEIGHT
 from scripts.utils.CORE_FUNCS import vec, euclidean_distance
 
@@ -120,9 +122,6 @@ class Water(pygame.sprite.Sprite):
 
 
     def player_collision(self, player):
-        # if player.vel.y <= 0:
-        #     return
-        
         if player.hitbox.y < self.pos.y + 20:
             collided = False
             for spring in self.springs.sprites():
@@ -237,9 +236,6 @@ class Water_3D(pygame.sprite.Sprite):
 
 
     def player_collision(self, player):
-        # if player.vel.y <= 0:
-        #     return
-        
         collided = []
         if player.hitbox.y < self.pos.y + 20:
             bottom_springs = self.bottom_springs.sprites()
@@ -275,6 +271,25 @@ class Water_3D(pygame.sprite.Sprite):
                         col = random.choice([self.base_col, self.back_col, self.outline_colour])
                     )
 
+    def rain_collisions(self):
+        if random.randint(1, 50) == 1:
+            bottom_sprites = self.bottom_springs.sprites()
+            top_sprites = self.top_springs.sprites()
+            i = random.randint(2, len(self.top_springs)-3)
+            offset = 5 + random.random() * 10
+
+            bottom_sprites[i].pos.y += offset
+            top_sprites[i].pos.y += offset
+
+            bottom_sprites[i-1].pos.y += offset / 2
+            top_sprites[i-1].pos.y += offset / 2
+
+            bottom_sprites[i+1].pos.y += offset / 2
+            top_sprites[i+1].pos.y += offset / 2
+
+            # for i in range(1, 3):
+            #     Rain_Splash(self.game, [self.game.all_sprites, self.game.state_loader.current_state.particle_manager.particles], (bottom_sprites[i].pos.x * (self.size.x + 100 / self.size.x), bottom_sprites[i].pos.y), random.uniform(2, 3) * 2)
+
     def spread_wave(self, flag):
         if not flag:
             return
@@ -290,6 +305,9 @@ class Water_3D(pygame.sprite.Sprite):
             springs[i + 1].vel += spread * (springs[i].pos.y - springs[i + 1].pos.y) if not springs[i+1].pinned else 0
 
     def update(self):
+        if self.game.state_loader.current_state.environment_manager.weather["rain"]:
+            self.rain_collisions()
+            
         self.bottom_springs.update((flag := [False]))
         self.top_springs.update(flag)
         self.spread_wave([0])

@@ -15,6 +15,7 @@ from scripts.config.SETTINGS import Z_LAYERS, SIZE, TILE_SIZE
 class Light_Manager:
     def __init__(self, game):
         self.game = game
+        self.environment_manager = None
         self.screen = self.game.screen
         self.z = Z_LAYERS["light and shadow"]
 
@@ -32,16 +33,9 @@ class Light_Manager:
         self.glow_cache = {"base" : glow_surf}
         self.shadow_cache = {}
         
-        self.l = 100
-        
         
     def reset(self):
-        self.light_layer.fill((self.l, self.l, self.l))
-
-        if (keys:=pygame.key.get_pressed())[pygame.K_COMMA]:
-            self.l = max(0, self.l - 1)
-        if (keys:=pygame.key.get_pressed())[pygame.K_PERIOD]:
-            self.l = min(255, self.l + 1)
+        self.light_layer.fill((self.environment_manager.light, self.environment_manager.light, self.environment_manager.light))
 
         ###################################################################################
 
@@ -78,6 +72,9 @@ class Light_Manager:
         ###################################################################################
 
     def update(self):
+        if self.environment_manager == None:
+            self.environment_manager = self.game.state_loader.current_state.environment_manager
+            
         self.draw()
         self.reset()
 

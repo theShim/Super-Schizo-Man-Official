@@ -59,8 +59,9 @@ class Game:
 
         self.state_loader = State_Loader(self, start="debug")
         self.state_loader.populate_states()
+        self.state_loader.current_state.environment_manager.weather["rain"] = True
 
-        # self.state_loader.current_state.particle_manager.add_particle("black flame", pos=(WIDTH*0.75 + 200, -HEIGHT/2 + 300))
+        self.state_loader.current_state.particle_manager.add_particle("black flame", pos=(WIDTH*0.75 + 200, -HEIGHT/2 + 300))
         # self.state_loader.current_state.particle_manager.add_particle("lightning spinner", 
         #                                                               points=[
         #                                                                   (WIDTH*0.5+100, -HEIGHT/2 + 180),
