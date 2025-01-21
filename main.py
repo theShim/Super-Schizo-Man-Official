@@ -1,6 +1,4 @@
 import os
-
-import pygame.transform
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 import contextlib
@@ -15,6 +13,7 @@ import math
 from scripts.entities.player import Player
 from scripts.entities.bord import Bord
 from scripts.entities.firefly import FireFly_Cluster
+from scripts.entities.kinematic_fella import RedBox
 from scripts.nature.nature_tiles.grass import Grass_Manager
 from scripts.states.state_machine import State_Loader
 from scripts.world_loading.tiles import Tile, Offgrid_Tile
@@ -22,6 +21,8 @@ from scripts.world_loading.tiles import Tile, Offgrid_Tile
 from scripts.config.SETTINGS import DEBUG, WINDOW_TITLE, SIZE, FPS, WIDTH, HEIGHT, CAMERA_FOLLOW_SPEED
 from scripts.utils.CORE_FUNCS import vec, check_loaded_sprite_number, lerp
 from scripts.utils.debugger import Debugger
+
+from scripts.utils.CORE_FUNCS import countLinesIn
 
 pygame.Rect = pygame.FRect
 
@@ -53,9 +54,10 @@ class Game:
         #various sprite groups, just to collect everything together
         self.all_sprites = pygame.sprite.Group()
         self.entities = pygame.sprite.Group()
-        self.player = Player(self, [self.all_sprites, self.entities], char_num=2)
-        [Bord(self, [self.all_sprites, self.entities], (WIDTH/2 + (i * 10), -HEIGHT/2 + 250)) for i in range(5)]
-        FireFly_Cluster(self, [self.all_sprites, self.entities], (WIDTH/2 + 200, -HEIGHT/2 + 300), 8)
+        self.player = Player(self, [self.all_sprites, self.entities], char_num=2, spawn_pos=(WIDTH * 4, -HEIGHT/2))
+        # [Bord(self, [self.all_sprites, self.entities], (WIDTH/2 + (i * 10), -HEIGHT/2 + 250)) for i in range(5)]
+        # FireFly_Cluster(self, [self.all_sprites, self.entities], (WIDTH/2 + 200, -HEIGHT/2 + 300), 8)
+        RedBox(self, [self.all_sprites, self.entities])
 
         self.state_loader = State_Loader(self, start="debug")
         self.state_loader.populate_states()
@@ -165,7 +167,7 @@ class Game:
             if DEBUG:
                 self.debugger.update()
                 self.fps_clock.tick_busy_loop()
-                self.debugger.add_text(f"FPS: {round(self.clock.get_fps(), 1)} | {round(self.fps_clock.get_fps(), 1)}")
+                self.debugger.add_text(f"FPS: {round(self.clock.get_fps(), 1)} | DT: {round(self.dt, 4)}")
 
             pygame.display.update()
             self.clock.tick(FPS)

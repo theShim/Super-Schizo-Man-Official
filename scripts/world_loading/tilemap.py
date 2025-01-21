@@ -74,14 +74,14 @@ class Tilemap:
 
         self.tilemap[layer][tile_loc] = Tile(self.game, type, variant, pos, normal=normal if not self.editor_flag else None)
 
-    def add_offgrid_tile(self, type: str, variant: int, pos: list[int, int]):
+    def add_offgrid_tile(self, type: str, variant: int, pos: list[int, int], *kwargs):
         if self.editor_flag:
-            return self.offgrid_tiles.append(Offgrid_Tile(self.game, type, variant, pos))
+            return self.offgrid_tiles.append(Offgrid_Tile(self.game, type, variant, pos, kwargs))
         
         if type in NATURE_TILES:
             self.nature_manager.add_tile(type, pos, variant)
         else:
-            return self.offgrid_tiles.append(Offgrid_Tile.create_offgrid_tile(self.game, type, variant, pos))
+            return self.offgrid_tiles.append(Offgrid_Tile.create_offgrid_tile(self.game, type, variant, pos, kwargs))
 
     def generate_map(self, size: list[int, int], lowest_buffer: list[int, int]):
         map_width = size[0] * TILE_SIZE
@@ -243,10 +243,16 @@ class Tilemap:
 
         self.offgrid_tiles = []
         for dic in data["offgrid"]:
+            extra: dict = dic.copy()
+            del extra["type"]
+            del extra["variant"]
+            del extra["pos"]
+
             self.add_offgrid_tile(
                 dic["type"],
                 dic["variant"],
-                dic["pos"]
+                dic["pos"],
+                extra
             )
 
         if not self.editor_flag: 
@@ -308,7 +314,15 @@ class Tilemap:
 
     def offgrid_render(self):
         for tile in self.offgrid_tiles:
-            if (self.game.offset.x - TILE_SIZE < tile.pos[0] < self.game.offset.x + WIDTH and
+            if tile.type == "bridge":
+                if (self.game.offset.x - TILE_SIZE < tile.pos[0] < self.game.offset.x + WIDTH and
+                    self.game.offset.y - TILE_SIZE < tile.pos[1] < self.game.offset.y + HEIGHT):
+                    yield tile
+                elif (self.game.offset.x - TILE_SIZE < tile.end_pos[0] < self.game.offset.x + WIDTH and
+                    self.game.offset.y - TILE_SIZE < tile.end_pos[1] < self.game.offset.y + HEIGHT):
+                    yield tile
+
+            elif (self.game.offset.x - TILE_SIZE < tile.pos[0] < self.game.offset.x + WIDTH and
                 self.game.offset.y - TILE_SIZE < tile.pos[1] < self.game.offset.y + HEIGHT):
                 yield tile
 

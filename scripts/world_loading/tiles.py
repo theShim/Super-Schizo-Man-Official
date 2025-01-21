@@ -127,15 +127,17 @@ class Offgrid_Tile(pygame.sprite.Sprite):
             cls.SPRITES[name] = imgs
     
     @classmethod
-    def create_offgrid_tile(cls, game, type_, variant, pos):
-        from scripts.world_loading.custom_offgrid import Torch
+    def create_offgrid_tile(cls, game, type_, variant, pos, *kwargs):
+        from scripts.world_loading.custom_offgrid import Torch, Bridge
         
         if type_ == "torch":
             return Torch(game, variant, pos)
+        elif type_ == "bridge":
+            return Bridge(game, variant, pos, *kwargs)
         else:
-            return Offgrid_Tile(game, type_, variant, pos)
+            return Offgrid_Tile(game, type_, variant, pos, *kwargs)
 
-    def __init__(self, game, type_, variant, pos):
+    def __init__(self, game, type_, variant, pos, *kwargs):
         super().__init__()
         self.game = game
         self.screen = self.game.screen
@@ -145,10 +147,28 @@ class Offgrid_Tile(pygame.sprite.Sprite):
         self.pos = pos
         self.z = Z_LAYERS["background offgrid"]
 
+        try:
+            other: dict = [*kwargs[0]][0]
+            if len(other.keys()):
+                for key, value in other.items():
+                    setattr(self, key, value)
+        except IndexError:
+            pass
+
     @property
     def dict(self):
-        return {'type':self.type, "pos":self.pos, "variant":self.variant}
+        info = self.__dict__.copy()
+        for unneeded in ['_Sprite__g', '_Sprite__image', '_Sprite__rect', 'game', 'screen', 'z']:
+            del info[unneeded]
+        return info
     
     def update(self):
         img = Offgrid_Tile.SPRITES[self.type][self.variant]
+
+        if self.type == "bridge":
+            pygame.draw.line(self.screen, (255, 0, 0), self.pos - self.game.offset + vec(img.size) / 2, self.end_pos- self.game.offset + vec(img.size) / 2, 2)
+            self.screen.blit(img, self.pos - self.game.offset)
+            self.screen.blit(img, self.end_pos - self.game.offset)
+            return
+        
         self.screen.blit(img, self.pos - self.game.offset)

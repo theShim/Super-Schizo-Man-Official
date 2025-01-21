@@ -17,7 +17,8 @@
 
 >- Then play that blinking effect, have the player wake up in the grassy area. Probably use the perlin background
 >- Have the butterfly wake you up and talk to you.
->- The butterfly voiced by will act as a guide but witty and often stupid/useless.
+>- just yapping about wondering who you are and y u're in the middle of a field but that u should follow them.
+>- The butterfly (yunyang) will act as a guide but witty and often stupid/useless.
 >- Maybe have an ability to click on enemies to highlight features about it like health and general description
 
 ###
@@ -30,7 +31,7 @@
 ### Initial dialogue
 - Begin with dialogue with some guy at a house or something maybe a cabin
 - Have him talk about some generic boss and tells you its location
-- Follow the butterfly's instructions to get there, but he should generally be annoying as hell
+- Follow the butterfly's instructions to get there, but he should generally be annoying as hell (hence yunyang's the VA for it)
 
 >- Transition from grassy area to denser forest to darker underground area?
 
@@ -61,16 +62,16 @@
 >- In a dungeon underground
 
 
-## Stage 2 - Desert?
+## Stage 2 - Desert/Sandy (mfing Almuj)?
 
-## Stage 3 - Mystic Forest?
+## Stage 3 - Mystic Forest? (how will it be different to grassy area?) (elves)
 
-## Stage 4 - Lava/Hell?
+## Stage 4 - Lava/Hell? (how will it be different to underworld?)
 
 ## Stage 5 - Underworld -> Heaven?
 
-## Stage 6 - Mirror Dimension / Something really abstract with graph equations and stuff?
+## Stage 6 - Mirror Dimension / Something really abstract with graph equations and stuff? (had a cool maths boss idea thing)
 
-## Stage 7 - ?
+## Stage 7 - tropical amazon temple (minecraft jungle temple ahh)
 
 ## Stage 8 - Final Lair (think of smthn cool)

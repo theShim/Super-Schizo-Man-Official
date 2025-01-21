@@ -216,6 +216,17 @@ class Player(pygame.sprite.Sprite):
         else:
             #if the player hasn't collided with the floor then they're midair
             self.landed = False
+
+    def offgrid_collisions(self):
+        for tile in self.game.state_loader.tilemap.offgrid_render():
+            if tile.type == "bridge":
+                # if tile.touching:
+                #     if self.status in ['fall']:
+                #         self.change_status('idle')
+
+                for j in tile.joints:
+                    if tile.player_collisions(j, self): 
+                        break
             
         ###################################################################################### 
 
@@ -235,6 +246,7 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         self.move(keys)
         self.collisions()
+        self.offgrid_collisions()
 
         self.animate()
         self.draw()

@@ -14,7 +14,7 @@ from scripts.config.SETTINGS import Z_LAYERS
 
 class Lightning:
     class Spinner(pygame.sprite.Sprite):
-        def __init__(self, game, groups, points: list, speed=10, colours=[(230, 230, 230)], line_width=2):
+        def __init__(self, game, groups, points: list, speed=2, colours=[(230, 230, 230)], line_width=2):
             super().__init__(groups)
             self.game = game
             self.screen = self.game.screen
@@ -29,9 +29,14 @@ class Lightning:
             self.generations = 3
             self.colours = colours
             self.line_width = line_width
+            self.last_point = 0
 
         def gen_bolts(self, y_scroll):
             t = math.floor(self.interp) % len(self.points)
+            if t != self.last_point:
+                random.shuffle(self.points)
+                self.last_point = t
+
             interp = (self.interp % len(self.points)) - t
 
             start = vec(self.points[t]).lerp(vec(self.points[t+1 if t < len(self.points)-1 else 0]), interp)

@@ -132,6 +132,11 @@ class Editor:
         self.layers = {0 : {}}
         self.current_layer = -1
 
+        #other
+        self.custom = {
+            "bridge" : {"variant" : None, "start_pos" : None}
+        }
+
     def initialise(self):
         pygame.init()  #general pygame
         pygame.font.init() #font stuff
@@ -603,11 +608,26 @@ class Editor:
             pos = [mousePos[0] - current_img.get_width()//2 + self.offset.x, mousePos[1] - current_img.get_height()//2 + self.offset.y]
             
             if pos not in [t.pos for t in self.tilemap.offgrid_tiles]:
-                self.tilemap.add_offgrid_tile(
-                    type = self.offgrid_names[self.offgrid_tilegroup],
-                    variant = self.offgrid_tilevariant,
-                    pos = pos
-                )
+
+                if self.offgrid_names[self.offgrid_tilegroup] == "bridge":
+                    if self.custom["bridge"]["start_pos"] == None:
+                        self.custom["bridge"]["start_pos"] = pos
+                        self.custom["bridge"]["variant"] = self.offgrid_tilevariant
+                    else:
+                        self.tilemap.add_offgrid_tile(
+                            self.offgrid_names[self.offgrid_tilegroup],
+                            self.offgrid_tilevariant,
+                            self.custom["bridge"]["start_pos"],
+                            {"end_pos" : pos}
+                        )
+                        self.custom["bridge"] = {"variant" : None, "start_pos" : None}
+
+                else:
+                    self.tilemap.add_offgrid_tile(
+                        type = self.offgrid_names[self.offgrid_tilegroup],
+                        variant = self.offgrid_tilevariant,
+                        pos = pos
+                    )
                     
                 PlaceParticle(
                     self,
@@ -649,6 +669,7 @@ class Editor:
                             elif self.offgrid_tilegroup < 0:
                                 self.offgrid_tilegroup = len(self.offgrid_names) - 1
                             self.offgrid_tilevariant = 0
+                            self.custom["bridge"] = {"variant" : None, "start_pos" : None}
 
                         else:
                             self.offgrid_tilevariant -= event.y
@@ -656,6 +677,7 @@ class Editor:
                                 self.offgrid_tilevariant = 0
                             elif self.offgrid_tilevariant < 0:
                                 self.offgrid_tilevariant = len(self.offgrid_assets[self.offgrid_names[self.offgrid_tilegroup]]) - 1
+                            self.custom["bridge"] = {"variant" : None, "start_pos" : None}
                 else:
                     self.sidebar_yscroll = min(0, self.sidebar_yscroll + event.y * 8)
 
@@ -665,6 +687,7 @@ class Editor:
 
                 elif event.key == pygame.K_g:
                     self.on_grid = not self.on_grid
+                    self.custom["bridge"] = {"variant" : None, "start_pos" : None}
 
                 elif event.key == pygame.K_TAB:
                     if self.sidebar_open == False:
